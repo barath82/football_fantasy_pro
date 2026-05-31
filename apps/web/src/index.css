@@ -1,0 +1,8 @@
+/* Global resets — Mantine handles the rest */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
