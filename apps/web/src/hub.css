@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Hub CSS custom properties — Premium Slate Dark */
+.hub-root {
+  --hub-bg: #0f172a;
+  --hub-card: #1e293b;
+  --hub-card-hover: #263347;
+  --hub-border: rgba(148, 163, 184, 0.15);
+  --hub-border-hover: rgba(148, 163, 184, 0.28);
+  --hub-border-accent: rgba(139, 92, 246, 0.45);
+  --hub-text: #f1f5f9;
+  --hub-text-secondary: #94a3b8;
+  --hub-text-muted: #64748b;
+  --hub-accent: #8b5cf6;
+  --hub-accent-light: #a78bfa;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Thin custom scrollbar inside hub */
+.hub-root *::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+.hub-root *::-webkit-scrollbar-track {
+  background: transparent;
+}
+.hub-root *::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 2px;
+}
+
+/* Horizontal scroll container */
+.hub-h-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148,163,184,0.2) transparent;
+}
+.hub-h-scroll > * {
+  flex-shrink: 0;
+}
+
+/* Subtle card hover glow */
+.hub-card-glow:hover {
+  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.25),
+              0 8px 24px rgba(0, 0, 0, 0.35),
+              0 2px 8px rgba(0, 0, 0, 0.25);
+}

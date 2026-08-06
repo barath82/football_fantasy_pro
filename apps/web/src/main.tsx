@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import './index.css';
 import '@mantine/core/styles.css';
+import './hub.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/charts/styles.css';
 
