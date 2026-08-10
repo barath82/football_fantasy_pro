@@ -30,6 +30,19 @@
 - DB Migrations: TypeORM migrations
 - Local Dev: Docker Compose (PostgreSQL only)
 
+### 2026-08-06 — Pivot to Pitchwise (gamified predictor)
+**Decided:** Product pivot from the content-intelligence hub to "Pitchwise" — a challenge/predictor game layered on the official EPL fantasy game (Transfer Guru, Differential Guru, Strategy Guru challenges; Oracle = combined leaderboard). Spec: `lovable_plan.md` (design/routes), `content.md` (page copy).
+**Why:** User's own product direction change, not a technical decision — same React/Vite platform retained, UI direction changes.
+
+**Decided:** Built the new UI in a new `apps/web/src/predictor/` tree (own Tailwind-scoped design system under a `.pw` root class, dark-first with light toggle, react-router routes), wired at `/`, `/challenges`, `/leaderboard`, `/signup`. Old content-hub code (`components/hub/`, `pages/hub/`) preserved as-is, moved to `/legacy-hub/*` routes, not deleted or linked from nav.
+**Why:** User asked to reuse what's applicable but committed to a full UI change; additive-and-isolated build lets old work be salvaged/compared without risk, per user's explicit "don't touch/delete without confirmation" rule. (Approach chosen from 3 options presented; user picked "new code additive, swap default route to new landing" over leaving new work at a side path or rewriting hub/* in place.)
+**Rejected:** In-place rewrite of `hub/*` (would require deleting a lot of existing work up front); leaving new routes at a non-default path (slower to actually see the new direction live).
+**Note:** Legacy hub's internal links (e.g. `Link to="/explore"`) were written for the old root-level paths and are now stale under `/legacy-hub/*` — not fixed, since that tree is unlinked/kept only for salvage. Flagging for whenever it's revisited.
+
+**Decided:** Real data reused where possible — challenge player pickers (Transfer, Differential) hit the existing `/players` API (real names + live ownership %) via the existing `usePlayers` hook, not mock data. Gameweek number/deadline pulled from the real `/gameweeks` API's `is_current`/`is_next` flags (added `isCurrent`/`isNext` to the API response and a new `useCurrentGameweek` hook), with a text placeholder ("Gameweek —" / "Preseason") shown while loading or before a gameweek is flagged current.
+**Rejected:** Hardcoding "Gameweek 14" from content.md's placeholder copy as static text (per user: build the real plumbing now, not just the visual placeholder).
+**Still mock (explicitly out of scope this pass, per lovable_plan.md):** the pre-set XI for Transfer Out/Captain pickers (`predictor/mock/presetSquad.ts`) and all leaderboard/expert data (`predictor/mock/experts.ts`) — no scoring backend or FPL-team-linking exists yet. Squad/expert names are fictional placeholders.
+
 ## Session Summaries
 
 ### Session 1 — 2026-05-31

@@ -10,6 +10,8 @@ export interface GwSummary {
   highestScore: number | null;
   transfersMade: number | null;
   finished: boolean;
+  isCurrent: boolean;
+  isNext: boolean;
   chipPlays: { name: string; count: number }[];
 }
 
@@ -53,6 +55,27 @@ export function useGameweeks() {
     },
     staleTime: Infinity,
   });
+}
+
+/**
+ * Resolves the live gameweek from the real gameweeks API (is_current flag).
+ * A gameweek already marked `finished` is never trusted as "current" even if
+ * is_current is set — that combination only happens with stale data (e.g. the
+ * last synced season's finale, before the new season has been ingested), and
+ * showing a finished gameweek as live would be actively misleading. Falls
+ * back to the next unfinished gameweek, then to null — callers should render
+ * a "gameweek 1 / preseason" placeholder in that case.
+ */
+export function useCurrentGameweek() {
+  const query = useGameweeks();
+  const gameweeks = query.data;
+
+  const current =
+    gameweeks?.find((gw) => gw.isCurrent && !gw.finished) ??
+    gameweeks?.find((gw) => gw.isNext) ??
+    null;
+
+  return { ...query, current };
 }
 
 export function useGameweekDetail(gwFplId: number | null) {

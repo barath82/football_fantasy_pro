@@ -32,7 +32,7 @@ export class GameweeksService {
       select: [
         'id', 'fplId', 'name', 'deadlineTime', 'averageEntryScore',
         'highestScore', 'finished', 'transfersMade', 'chipPlays',
-        'mostSelected', 'mostTransferredIn',
+        'mostSelected', 'mostTransferredIn', 'isCurrent', 'isNext',
       ],
     });
     return rows.map((gw) => this.mapGw(gw));
@@ -152,6 +152,8 @@ export class GameweeksService {
       highestScore: gw.highestScore,
       transfersMade: gw.transfersMade,
       finished: gw.finished,
+      isCurrent: gw.isCurrent,
+      isNext: gw.isNext,
       chipPlays: chips.map((c) => ({
         name: CHIP_LABELS[c.chip_name] ?? c.chip_name,
         count: c.num_played,

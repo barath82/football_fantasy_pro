@@ -14,6 +14,12 @@ import { HubPlayerDetail } from './pages/hub/HubPlayerDetail';
 import { Sources } from './pages/hub/Sources';
 import { SourceDetail } from './pages/hub/SourceDetail';
 import { Trending } from './pages/hub/Trending';
+import { ThemeProvider } from './predictor/theme/ThemeProvider';
+import { PredictorLayout } from './predictor/components/PredictorLayout';
+import { Landing } from './predictor/pages/Landing';
+import { Challenges } from './predictor/pages/Challenges';
+import { Leaderboard } from './predictor/pages/Leaderboard';
+import { Signup } from './predictor/pages/Signup';
 
 function StatsLayout() {
   return (
@@ -26,15 +32,23 @@ function StatsLayout() {
 export default function App() {
   return (
     <Routes>
-      {/* Content Intelligence Hub */}
-      <Route element={<HubLayout />}>
+      {/* Pitchwise — gamified predictor game (current direction) */}
+      <Route element={<ThemeProvider><PredictorLayout /></ThemeProvider>}>
+        <Route index element={<Landing />} />
+        <Route path="/challenges" element={<Challenges />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/signup" element={<Signup />} />
+      </Route>
+
+      {/* Content Intelligence Hub (previous pivot — kept for salvage, not linked from nav) */}
+      <Route path="/legacy-hub" element={<HubLayout />}>
         <Route index element={<GameweekHub />} />
-        <Route path="/explore" element={<ContentExplorer />} />
-        <Route path="/intelligence/players" element={<HubPlayers />} />
-        <Route path="/intelligence/players/:name" element={<HubPlayerDetail />} />
-        <Route path="/sources" element={<Sources />} />
-        <Route path="/sources/:id" element={<SourceDetail />} />
-        <Route path="/trending" element={<Trending />} />
+        <Route path="explore" element={<ContentExplorer />} />
+        <Route path="intelligence/players" element={<HubPlayers />} />
+        <Route path="intelligence/players/:name" element={<HubPlayerDetail />} />
+        <Route path="sources" element={<Sources />} />
+        <Route path="sources/:id" element={<SourceDetail />} />
+        <Route path="trending" element={<Trending />} />
       </Route>
 
       {/* FPL Statistics Dashboard (existing Mantine app) */}
