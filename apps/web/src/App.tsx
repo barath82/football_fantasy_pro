@@ -20,6 +20,8 @@ import { Landing } from './predictor/pages/Landing';
 import { Challenges } from './predictor/pages/Challenges';
 import { Leaderboard } from './predictor/pages/Leaderboard';
 import { Signup } from './predictor/pages/Signup';
+import { MyPicks } from './predictor/pages/MyPicks';
+import { Account } from './predictor/pages/Account';
 
 function StatsLayout() {
   return (
@@ -38,6 +40,8 @@ export default function App() {
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/my-picks" element={<MyPicks />} />
+        <Route path="/account" element={<Account />} />
       </Route>
 
       {/* Content Intelligence Hub (previous pivot — kept for salvage, not linked from nav) */}

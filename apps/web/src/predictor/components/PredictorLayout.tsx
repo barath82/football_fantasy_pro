@@ -4,11 +4,12 @@ import { Menu, X } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { BrahmaIcon } from './guru-icons';
+import { useAuth } from '../hooks/useAuth';
+import { AccountAvatarMenu, AccountMobileLinks } from './AccountMenu';
 
 const NAV_LINKS = [
   { to: '/challenges', label: 'Challenges' },
   { to: '/leaderboard', label: 'Leaderboard' },
-  { to: '/signup', label: 'Sign up' },
 ];
 
 function navLinkStyle(isActive: boolean) {
@@ -20,6 +21,7 @@ function navLinkStyle(isActive: boolean) {
 
 export function PredictorLayout() {
   const { theme } = useTheme();
+  const { isAuthenticated } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -41,6 +43,13 @@ export function PredictorLayout() {
                 {link.label}
               </NavLink>
             ))}
+            {isAuthenticated ? (
+              <AccountAvatarMenu />
+            ) : (
+              <NavLink to="/signup" className="pw-focus text-xs" style={({ isActive }) => navLinkStyle(isActive)}>
+                Sign up
+              </NavLink>
+            )}
             <ThemeToggle />
           </nav>
 
@@ -72,6 +81,18 @@ export function PredictorLayout() {
                 {link.label}
               </NavLink>
             ))}
+            {isAuthenticated ? (
+              <AccountMobileLinks onNavigate={() => setMenuOpen(false)} />
+            ) : (
+              <NavLink
+                to="/signup"
+                onClick={() => setMenuOpen(false)}
+                className="pw-focus py-2.5 text-sm"
+                style={({ isActive }) => navLinkStyle(isActive)}
+              >
+                Sign up
+              </NavLink>
+            )}
           </nav>
         )}
       </header>

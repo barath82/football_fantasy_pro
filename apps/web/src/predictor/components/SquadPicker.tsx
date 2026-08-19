@@ -39,7 +39,7 @@ export function SquadPicker({ label, value, onChange, exclude }: SquadPickerProp
 
       {open && (
         <ul
-          className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-lg"
+          className="absolute z-30 mt-1 max-h-56 w-full overflow-auto rounded-lg"
           style={{ background: 'var(--pw-surface-2)', border: '1px solid var(--pw-border)' }}
         >
           {options.map((p) => (

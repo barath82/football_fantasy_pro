@@ -1,17 +1,24 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { BrahmaIcon } from '../components/guru-icons';
 import { usePageTitle } from '../hooks/usePageTitle';
+import { loginUrl } from '../hooks/useAuth';
 
-const PROVIDERS = [
-  { key: 'FPL', label: 'Continue with FPL', body: 'Pulls your team so we can grade picks automatically.' },
-  { key: 'Google', label: 'Continue with Google', body: 'Fast sign-in. You can link FPL later.' },
-  { key: 'Twitter / X', label: 'Link Twitter / X', body: 'Required to show up on the public expert leaderboard.' },
-];
+const ERROR_MESSAGES: Record<string, string> = {
+  google_not_configured: "Google sign-in isn't set up yet — check back soon.",
+  x_not_configured: "X sign-in isn't set up yet — check back soon.",
+  state_mismatch: 'Something went wrong. Please try again.',
+  google_failed: 'Google sign-in failed. Please try again.',
+  x_failed: 'X sign-in failed. Please try again.',
+};
 
 export function Signup() {
   usePageTitle('Sign up — FantasyBrahma');
 
-  const [pending, setPending] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const returnTo = params.get('returnTo') || '/challenges';
+  const error = params.get('error');
+  const [fplPending, setFplPending] = useState(false);
 
   return (
     <div className="py-4">
@@ -23,27 +30,53 @@ export function Signup() {
         </p>
       </div>
 
+      {error && (
+        <p className="mt-4 rounded-lg px-3 py-2 text-center text-xs" style={{ background: 'var(--pw-surface)', color: 'var(--pw-negative)' }}>
+          {ERROR_MESSAGES[error] ?? 'Something went wrong. Please try again.'}
+        </p>
+      )}
+
       <div className="mt-8 flex flex-col gap-2.5">
-        {PROVIDERS.map((p) => (
-          <div key={p.key}>
-            <button
-              type="button"
-              onClick={() => setPending(p.key)}
-              className="pw-focus w-full rounded-lg px-3.5 py-2.5 text-left"
-              style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)' }}
-            >
-              <p className="text-sm font-semibold">{p.label}</p>
-              <p className="mt-0.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-                {p.body}
-              </p>
-            </button>
-            {pending === p.key && (
-              <p className="mt-1.5 pl-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-                {p.key} is coming soon.
-              </p>
-            )}
-          </div>
-        ))}
+        <a
+          href={loginUrl('google', returnTo)}
+          className="pw-focus w-full rounded-lg px-3.5 py-2.5 text-left"
+          style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', display: 'block' }}
+        >
+          <p className="text-sm font-semibold">Continue with Google</p>
+          <p className="mt-0.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+            Fast sign-in. You can link FPL later.
+          </p>
+        </a>
+
+        <a
+          href={loginUrl('x', returnTo)}
+          className="pw-focus w-full rounded-lg px-3.5 py-2.5 text-left"
+          style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', display: 'block' }}
+        >
+          <p className="text-sm font-semibold">Continue with X</p>
+          <p className="mt-0.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+            Required to show up on the public expert leaderboard.
+          </p>
+        </a>
+
+        <div>
+          <button
+            type="button"
+            onClick={() => setFplPending(true)}
+            className="pw-focus w-full rounded-lg px-3.5 py-2.5 text-left"
+            style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)' }}
+          >
+            <p className="text-sm font-semibold">Continue with FPL</p>
+            <p className="mt-0.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+              Pulls your team so we can grade picks automatically.
+            </p>
+          </button>
+          {fplPending && (
+            <p className="mt-1.5 pl-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+              FPL sign-in is coming soon.
+            </p>
+          )}
+        </div>
       </div>
 
       <p className="mt-8 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>

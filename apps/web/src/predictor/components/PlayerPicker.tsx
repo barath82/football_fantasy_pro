@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { usePlayers, type PlayerRow } from '../../hooks/usePlayers';
 
@@ -15,12 +15,19 @@ interface PlayerPickerProps {
 /** Searchable player select, backed by the real /players API (name + live ownership %). */
 export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnership, placeholder = 'Search players' }: PlayerPickerProps) {
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [open, setOpen] = useState(false);
 
-  const searchActive = query.trim().length >= 2;
+  // Debounce the network search by 200ms — the input itself stays instant.
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedQuery(query), 200);
+    return () => clearTimeout(id);
+  }, [query]);
+
+  const searchActive = debouncedQuery.trim().length >= 2;
 
   const { data, isFetching } = usePlayers({
-    search: searchActive ? query.trim() : undefined,
+    search: searchActive ? debouncedQuery.trim() : undefined,
     minOwnership,
     maxOwnership,
     sortBy: 'totalPoints',
@@ -67,7 +74,7 @@ export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnershi
 
       {open && searchActive && (
         <ul
-          className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-lg"
+          className="absolute z-30 mt-1 max-h-56 w-full overflow-auto rounded-lg"
           style={{ background: 'var(--pw-surface-2)', border: '1px solid var(--pw-border)' }}
         >
           {isFetching && (

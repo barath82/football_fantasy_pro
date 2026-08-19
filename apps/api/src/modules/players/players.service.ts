@@ -118,10 +118,26 @@ export class PlayersService {
         '(p.web_name ILIKE :s OR p.first_name ILIKE :s OR p.second_name ILIKE :s)',
         { s: `%${search}%` },
       );
+      // A name that *starts with* the query ranks above one that merely
+      // contains it elsewhere — e.g. searching "sa" should put Saka/Salah
+      // ahead of Isak, regardless of points. The chosen sort (points, by
+      // default) only breaks ties within each relevance group. Ranked on
+      // web_name only (what's actually shown) — first/second_name are
+      // full legal names not displayed anywhere, so a player whose hidden
+      // middle name happens to start with the query (e.g. Matheus "Santos"
+      // Cunha, for "sa") would otherwise rank first for no visible reason.
+      qb.addSelect(
+        `CASE WHEN p.web_name ILIKE :prefix THEN 0 ELSE 1 END`,
+        'match_rank',
+      )
+        .setParameter('prefix', `${search}%`)
+        .orderBy('match_rank', 'ASC')
+        .addOrderBy(sortCol, sortOrder);
+    } else {
+      qb.orderBy(sortCol, sortOrder);
     }
 
     const [players, total] = await qb
-      .orderBy(sortCol, sortOrder)
       .skip((page - 1) * pageSize)
       .take(pageSize)
       .getManyAndCount();
@@ -191,11 +207,12 @@ export class PlayersService {
         { maxOwnership });
     if (minPoints != null)
       base.having('SUM(COALESCE(pgs.total_points, 0)) >= :minPoints', { minPoints });
-    if (search)
+    if (search) {
       base.andWhere(
         '(p.web_name ILIKE :s OR p.first_name ILIKE :s OR p.second_name ILIKE :s)',
         { s: `%${search}%` },
-      );
+      ).setParameter('prefix', `${search}%`);
+    }
 
     const dataQb = base.clone()
       .select('p.id',                                                 'id')
@@ -225,8 +242,22 @@ export class PlayersService {
       .addSelect('COALESCE(ph.price, p.now_cost)',                    'gw_price')
       .addSelect(
         'COALESCE(os.selected_by_percent, p.selected_by_percent)',   'gw_ownership',
-      )
-      .orderBy(sortCol, order)
+      );
+
+    if (search) {
+      // Same relevance-first ranking as the season-mode search — see comment there.
+      dataQb
+        .addSelect(
+          `CASE WHEN p.web_name ILIKE :prefix THEN 0 ELSE 1 END`,
+          'match_rank',
+        )
+        .orderBy('match_rank', 'ASC')
+        .addOrderBy(sortCol, order);
+    } else {
+      dataQb.orderBy(sortCol, order);
+    }
+
+    dataQb
       .addOrderBy('p.id', 'ASC')
       .limit(pageSize!)
       .offset((page! - 1) * pageSize!);

@@ -46,6 +46,33 @@ export class SyncService {
 
   // ─── Public API ───────────────────────────────────────────────────────────
 
+  /**
+   * Bootstrap only — season, positions, teams, gameweeks, players. 1 API call,
+   * cheap. This is what most callers actually need (a fresh player list and
+   * current gameweek); the full per-player stats history is separate because
+   * it's 841 additional API calls and memory-heavy enough to have OOM-killed
+   * this sandbox once already (see ERRORS.md, 2026-08-19).
+   */
+  async runBootstrapSync(): Promise<void> {
+    const started = Date.now();
+    this.logger.log('=== Bootstrap-only FPL sync starting ===');
+
+    try {
+      const bootstrap = await this.fplApi.getBootstrapStatic();
+      const season = await this.upsertSeason();
+      const positionMap = await this.upsertPositions(bootstrap.element_types);
+      const teamMap = await this.upsertTeams(bootstrap.teams, season.id);
+      await this.upsertGameweeks(bootstrap.events, season.id);
+      await this.upsertPlayers(bootstrap.elements, season.id, teamMap, positionMap);
+      await this.log('bootstrap-static', 'success', bootstrap.elements.length, Date.now() - started);
+      this.logger.log(`Bootstrap: ${bootstrap.elements.length} players, ${bootstrap.teams.length} teams, ${bootstrap.events.length} GWs`);
+      this.logger.log(`=== Bootstrap sync complete in ${((Date.now() - started) / 1000).toFixed(1)}s ===`);
+    } catch (err: any) {
+      await this.log('bootstrap-static', 'error', 0, Date.now() - started, err.message);
+      throw err;
+    }
+  }
+
   async runFullSync(): Promise<void> {
     const started = Date.now();
     this.logger.log('=== Full FPL sync starting ===');
@@ -94,6 +121,15 @@ export class SyncService {
 
   private async upsertSeason(): Promise<Season> {
     const year = this.config.get<string>('fpl.currentSeason')!;
+    // Un-mark any other season as current first — upsert only ever touches the
+    // row matching `year`, so without this a season-label change (e.g.
+    // 2025-26 → 2026-27) leaves two rows both flagged is_current.
+    await this.seasonRepo
+      .createQueryBuilder()
+      .update()
+      .set({ isCurrent: false })
+      .where('year != :year', { year })
+      .execute();
     await this.seasonRepo.upsert(
       { year, isCurrent: true },
       { conflictPaths: ['year'], skipUpdateIfNoValuesChanged: true },
