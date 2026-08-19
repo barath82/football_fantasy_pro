@@ -4,10 +4,14 @@ import { ChallengeBlock } from '../components/ChallengeBlock';
 import { PlayerPicker } from '../components/PlayerPicker';
 import { SquadPicker } from '../components/SquadPicker';
 import { FormationPicker } from '../components/FormationPicker';
+import { DifferentialGuruIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
+import { usePageTitle } from '../hooks/usePageTitle';
 import type { PlayerRow } from '../../hooks/usePlayers';
 import type { SquadPlayer } from '../mock/presetSquad';
 
 export function Challenges() {
+  usePageTitle('Weekly Challenges — FantasyBrahma');
+
   const [transferIn, setTransferIn] = useState<PlayerRow | null>(null);
   const [transferOut, setTransferOut] = useState<SquadPlayer | null>(null);
   const [differentialSucceed, setDifferentialSucceed] = useState<PlayerRow | null>(null);
@@ -24,14 +28,17 @@ export function Challenges() {
     <div className="py-4 pb-20">
       <GameweekBadge />
       <h1 className="mt-2 text-[1.2375rem]">Your picks</h1>
+      <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+        Six calls. About a minute.
+      </p>
 
       <div className="mt-6">
-        <ChallengeBlock title="Transfer Guru" description="One in, one out. We track the net points.">
+        <ChallengeBlock icon={TransferGuruIcon} title="Transfer Guru" description="One in, one out. We track the net points.">
           <PlayerPicker label="Transfer in" value={transferIn} onChange={setTransferIn} placeholder="Search for a player" />
           <SquadPicker label="Transfer out" value={transferOut} onChange={setTransferOut} />
         </ChallengeBlock>
 
-        <ChallengeBlock title="Differential Guru" description="Read the crowd.">
+        <ChallengeBlock icon={DifferentialGuruIcon} title="Differential Guru" description="Read the crowd.">
           <PlayerPicker
             label="Low-owned pick to succeed (<10%)"
             value={differentialSucceed}
@@ -48,7 +55,7 @@ export function Challenges() {
           />
         </ChallengeBlock>
 
-        <ChallengeBlock title="Strategy Guru" description="Structure and armband.">
+        <ChallengeBlock icon={StrategyGuruIcon} title="Strategy Guru" description="Structure and armband.">
           <div>
             <p className="mb-1.5 text-xs font-medium" style={{ color: 'var(--pw-fg-muted)' }}>
               Formation

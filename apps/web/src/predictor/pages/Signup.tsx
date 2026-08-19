@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Trophy } from 'lucide-react';
+import { BrahmaIcon } from '../components/guru-icons';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const PROVIDERS = [
   { key: 'FPL', label: 'Continue with FPL', body: 'Pulls your team so we can grade picks automatically.' },
@@ -8,17 +9,21 @@ const PROVIDERS = [
 ];
 
 export function Signup() {
+  usePageTitle('Sign up — FantasyBrahma');
+
   const [pending, setPending] = useState<string | null>(null);
 
   return (
     <div className="py-4">
-      <Trophy size={24} style={{ color: 'var(--pw-accent)' }} />
-      <h1 className="mt-2.5 text-[1.2375rem]">Join the board</h1>
-      <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-        One account. Every gameweek. Track your rank as the season plays out.
-      </p>
+      <div className="flex flex-col items-center text-center">
+        <BrahmaIcon size={30} style={{ color: 'var(--pw-accent)' }} />
+        <h1 className="mt-3 text-[1.2375rem]">Become a guru</h1>
+        <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+          One account, a minute a week. Climb from guru to Brahma as the season plays out.
+        </p>
+      </div>
 
-      <div className="mt-6 flex flex-col gap-2.5">
+      <div className="mt-8 flex flex-col gap-2.5">
         {PROVIDERS.map((p) => (
           <div key={p.key}>
             <button
@@ -41,7 +46,7 @@ export function Signup() {
         ))}
       </div>
 
-      <p className="mt-8 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+      <p className="mt-8 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
         By continuing you agree to play fair and not shout at the fixture computer.
       </p>
     </div>

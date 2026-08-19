@@ -3,6 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 import { ThemeToggle } from '../theme/ThemeToggle';
+import { BrahmaIcon } from './guru-icons';
 
 const NAV_LINKS = [
   { to: '/challenges', label: 'Challenges' },
@@ -22,11 +23,16 @@ export function PredictorLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="pw" data-theme={theme}>
-      <div className="mx-auto flex min-h-screen max-w-[560px] flex-col px-5">
-        <header className="flex items-center justify-between py-4">
-          <NavLink to="/" className="pw-display pw-focus text-base" onClick={() => setMenuOpen(false)}>
-            Pitchwise
+    <div className="pw flex min-h-screen flex-col" data-theme={theme}>
+      <header className="pw-header">
+        <div className="mx-auto flex max-w-[560px] items-center justify-between px-5 py-3.5">
+          <NavLink
+            to="/"
+            className="pw-display pw-focus flex items-center gap-2 text-base"
+            onClick={() => setMenuOpen(false)}
+          >
+            <BrahmaIcon size={18} style={{ color: 'var(--pw-accent)' }} />
+            FantasyBrahma
           </NavLink>
 
           <nav className="hidden items-center gap-5 sm:flex">
@@ -51,10 +57,10 @@ export function PredictorLayout() {
               {menuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
-        </header>
+        </div>
 
         {menuOpen && (
-          <nav className="flex flex-col gap-1 pb-4 sm:hidden" style={{ borderTop: '1px solid var(--pw-border)' }}>
+          <nav className="mx-auto flex max-w-[560px] flex-col gap-1 px-5 pb-4 sm:hidden" style={{ borderTop: '1px solid var(--pw-border)' }}>
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.to}
@@ -68,13 +74,15 @@ export function PredictorLayout() {
             ))}
           </nav>
         )}
+      </header>
 
+      <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col px-5">
         <main className="flex-1">
           <Outlet />
         </main>
 
         <footer className="py-6 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-          © 2026 Pitchwise. Built for FPL obsessives.
+          FantasyBrahma · Not affiliated with the Premier League or Fantasy Premier League.
         </footer>
       </div>
     </div>

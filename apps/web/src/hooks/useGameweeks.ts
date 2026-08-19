@@ -68,7 +68,7 @@ export function useGameweeks() {
  */
 export function useCurrentGameweek() {
   const query = useGameweeks();
-  const gameweeks = query.data;
+  const gameweeks = Array.isArray(query.data) ? query.data : undefined;
 
   const current =
     gameweeks?.find((gw) => gw.isCurrent && !gw.finished) ??

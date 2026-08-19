@@ -3,13 +3,15 @@ import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
 import { GameweekBadge } from '../components/GameweekBadge';
 import { SegmentedTabs } from '../components/SegmentedTabs';
 import { ExpandableRow } from '../components/ExpandableRow';
+import { DifferentialGuruIcon, OracleIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
+import { usePageTitle } from '../hooks/usePageTitle';
 import { getLeaderboard, type LeaderboardKey } from '../mock/experts';
 
-const TABS: { key: LeaderboardKey; label: string }[] = [
-  { key: 'oracle', label: 'The Oracle' },
-  { key: 'transfer', label: 'Transfer' },
-  { key: 'differential', label: 'Differential' },
-  { key: 'strategy', label: 'Strategy' },
+const TABS: { key: LeaderboardKey; label: string; icon: typeof OracleIcon }[] = [
+  { key: 'oracle', label: 'The Brahma', icon: OracleIcon },
+  { key: 'transfer', label: 'Transfer', icon: TransferGuruIcon },
+  { key: 'differential', label: 'Differential', icon: DifferentialGuruIcon },
+  { key: 'strategy', label: 'Strategy', icon: StrategyGuruIcon },
 ];
 
 function DeltaArrow({ delta }: { delta: number }) {
@@ -19,6 +21,8 @@ function DeltaArrow({ delta }: { delta: number }) {
 }
 
 export function Leaderboard() {
+  usePageTitle('Guru Leaderboard — FantasyBrahma');
+
   const [tab, setTab] = useState<LeaderboardKey>('oracle');
   const rows = getLeaderboard(tab);
 

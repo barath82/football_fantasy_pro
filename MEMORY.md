@@ -43,6 +43,13 @@
 **Rejected:** Hardcoding "Gameweek 14" from content.md's placeholder copy as static text (per user: build the real plumbing now, not just the visual placeholder).
 **Still mock (explicitly out of scope this pass, per lovable_plan.md):** the pre-set XI for Transfer Out/Captain pickers (`predictor/mock/presetSquad.ts`) and all leaderboard/expert data (`predictor/mock/experts.ts`) — no scoring backend or FPL-team-linking exists yet. Squad/expert names are fictional placeholders.
 
+### 2026-08-19 — Rebrand: Pitchwise → FantasyBrahma
+**Decided:** Adopted the "FantasyBrahma" identity wholesale, sourced from a Lovable-generated reference dropped in `tmp_changes/fantasybrahma_changes_aug11/`: new name/wordmark, saffron accent (`oklch(0.74 0.17 55)` dark / `oklch(0.66 0.19 50)` light, replacing the green accent), a custom "guru" SVG icon set (`predictor/components/guru-icons.tsx`, ported as-is — pure SVG, no framework dependency), "The Oracle" leaderboard tab renamed "The Brahma", sticky/blurred header, footer disclaimer ("Not affiliated with the Premier League or Fantasy Premier League"), per-page browser titles.
+**Why:** User's explicit direction after reviewing the reference (asked directly: "Yes, adopt FantasyBrahma fully").
+**Rejected:** Adopting the reference's actual codebase/framework (TanStack Start + TanStack Router + Tailwind v4 + Bun) — incompatible with this repo's React 18 + react-router-dom + Tailwind v3 + npm stack; ported the design intent into our existing `predictor/` tree instead, same pattern as the original `lovable_plan.md` port. Also rejected downgrading the Challenges player picker to the reference's static mock-list `<select>` — kept our real `/api/players`-backed searchable picker (user's explicit call).
+**New color token:** `--pw-up` added (green) — previously "positive" reused the accent color, which no longer works now that accent is saffron, not green. `--pw-negative` (red) unchanged.
+**Bug found and fixed during verification:** `useCurrentGameweek` crashed the entire predictor UI (blank screen) on a non-array `/gameweeks` response — no `Array.isArray` guard. Fixed in `hooks/useGameweeks.ts`. Surfaced by an unrelated process squatting on ports 3001/5433 during this session, but the missing guard was a real pre-existing fragility regardless of cause.
+
 ## Session Summaries
 
 ### Session 1 — 2026-05-31

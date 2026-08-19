@@ -40,3 +40,5 @@ coverage/
 
 # Docker volumes
 postgres-data/
+tmp_changes/
+*.zip

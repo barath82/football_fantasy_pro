@@ -31,7 +31,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        // NOTE: matches PORT in .env (moved off 3001 — see .env comment).
+        target: 'http://localhost:3002',
         changeOrigin: true,
       },
     },

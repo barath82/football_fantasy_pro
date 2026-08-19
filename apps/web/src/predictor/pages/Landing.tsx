@@ -1,28 +1,45 @@
 import { Link } from 'react-router-dom';
+import { Clock } from 'lucide-react';
 import { GameweekBadge } from '../components/GameweekBadge';
 import { SectionBlock } from '../components/SectionBlock';
+import { BrahmaIcon, DifferentialGuruIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
+import { usePageTitle } from '../hooks/usePageTitle';
 
 const FEATURES = [
-  { title: 'Transfer Guru', body: 'One in, one out. Track your net points every week.' },
-  { title: 'Differential Guru', body: 'Nail the <10% hit. Call the >20% blank.' },
-  { title: 'Strategy Guru', body: 'Set your formation and captain. Best structure wins.' },
+  { icon: TransferGuruIcon, title: 'Transfer Guru', body: 'One in, one out. Track your net points every week.' },
+  { icon: DifferentialGuruIcon, title: 'Differential Guru', body: 'Nail the <10% hit. Call the >20% blank.' },
+  { icon: StrategyGuruIcon, title: 'Strategy Guru', body: 'Set your formation and captain. Best structure wins.' },
 ];
 
 export function Landing() {
+  usePageTitle('FantasyBrahma — Fantasy EPL in one minute a week');
+
   return (
     <div className="py-4">
-      <GameweekBadge suffix="open now" />
+      <BrahmaIcon size={32} style={{ color: 'var(--pw-accent)' }} />
+      <div className="mt-4">
+        <GameweekBadge suffix="open now" />
+      </div>
 
-      <h1 className="mt-2.5 text-[1.35rem] leading-[1.2]">Prove you know fantasy football.</h1>
+      <h1 className="mt-2.5 text-[1.35rem] leading-[1.2]">
+        Brahma is the guru of all <span style={{ color: 'var(--pw-accent)' }}>gurus</span>.
+      </h1>
 
       <div className="mt-5 flex flex-col gap-3 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         <p>
-          Everyone thinks they've got the best takes on FPL. Pitchwise is a weekly challenge game built on top of the
-          official EPL fantasy — a way to actually settle it.
+          The expert among all experts. That's the seat everyone here is playing for — and FantasyBrahma is how you
+          earn it, one gameweek at a time.
+        </p>
+        <p className="flex items-start gap-2" style={{ color: 'var(--pw-fg)' }}>
+          <Clock size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--pw-accent)' }} />
+          <span>
+            We spend hours every week on fantasy content — podcasts, threads, spreadsheets, scout picks. This one
+            needs a minute to complete.
+          </span>
         </p>
         <p>
-          Make your calls across six micro-challenges. Points accumulate over the season. The leaderboard tells the
-          truth. The Oracle is whoever's on top when the dust clears.
+          Three gurus, six calls, built on top of the official EPL game. Points accumulate across the season and the
+          leaderboard tells the truth. Whoever sits on top at the end is the Brahma.
         </p>
         <p>Free. No team management. Just picks.</p>
       </div>
@@ -48,7 +65,8 @@ export function Landing() {
         <div className="flex flex-col">
           {FEATURES.map((f) => (
             <div key={f.title} className="py-3.5" style={{ borderTop: '1px solid var(--pw-border)' }}>
-              <h3 className="pw-display text-sm font-semibold">{f.title}</h3>
+              <f.icon size={22} style={{ color: 'var(--pw-accent)' }} />
+              <h3 className="pw-display mt-2 text-sm font-semibold">{f.title}</h3>
               <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
                 {f.body}
               </p>
