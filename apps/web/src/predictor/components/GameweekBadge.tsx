@@ -30,7 +30,7 @@ export function GameweekBadge({ suffix, showCountdown = true }: GameweekBadgePro
         (deadline ? (
           <Countdown target={deadline} />
         ) : (
-          <p className="pw-eyebrow mt-1">Deadline TBD</p>
+          <p className="pw-eyebrow mt-2">Deadline TBD</p>
         ))}
     </div>
   );

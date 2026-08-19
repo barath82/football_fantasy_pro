@@ -21,7 +21,7 @@ export function Landing() {
         <GameweekBadge suffix="open now" />
       </div>
 
-      <h1 className="mt-2.5 text-4xl leading-[1.05] sm:text-6xl">
+      <h1 className="mt-4 text-4xl leading-[1.05] sm:text-6xl">
         Brahma is the guru of all <span style={{ color: 'var(--pw-accent)' }}>gurus</span>.
       </h1>
 

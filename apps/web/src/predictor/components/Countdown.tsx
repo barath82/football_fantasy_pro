@@ -14,7 +14,7 @@ function formatRemaining(ms: number): string {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
-  if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
   if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
   return `${minutes}m ${seconds}s`;
 }
@@ -36,7 +36,7 @@ export function Countdown({ target, expiredLabel = 'Picks locked' }: CountdownPr
   const expired = diff <= 0;
 
   return (
-    <p className="pw-eyebrow mt-1" style={expired ? { color: 'var(--pw-negative)' } : undefined}>
+    <p className="pw-eyebrow mt-2" style={expired ? { color: 'var(--pw-negative)' } : undefined}>
       {expired ? expiredLabel : `Closes in ${formatRemaining(diff)}`}
     </p>
   );

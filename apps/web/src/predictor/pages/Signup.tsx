@@ -58,7 +58,7 @@ export function Signup() {
         </a>
       </div>
 
-      <p className="mt-10 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+      <p className="mt-14 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
         By continuing you agree to play fair and not shout at the fixture computer.
       </p>
     </div>
