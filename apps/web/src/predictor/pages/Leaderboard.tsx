@@ -27,10 +27,10 @@ export function Leaderboard() {
   const rows = getLeaderboard(tab);
 
   return (
-    <div className="py-4">
+    <div className="py-10 sm:py-16">
       <GameweekBadge />
-      <h1 className="mt-2 text-[1.2375rem]">Leaderboard</h1>
-      <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+      <h1 className="mt-2 text-3xl sm:text-4xl">Leaderboard</h1>
+      <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Who's actually good at this. Tap a row to look deeper.
       </p>
 
@@ -54,7 +54,7 @@ export function Leaderboard() {
                     {expert.topMove}
                   </p>
                 </div>
-                <span className="pw-display text-base">{expert.score}</span>
+                <span className="pw-display text-lg">{expert.score}</span>
               </div>
             }
           >

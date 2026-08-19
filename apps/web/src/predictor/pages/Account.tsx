@@ -67,8 +67,8 @@ export function Account() {
   }
 
   return (
-    <div className="py-4">
-      <h1 className="mt-2 text-[1.2375rem]">Account</h1>
+    <div className="py-10 sm:py-16">
+      <h1 className="mt-2 text-3xl sm:text-4xl">Account</h1>
 
       <div className="mt-6 flex items-center gap-3.5">
         <Avatar avatarUrl={user.avatarUrl} name={user.displayName} />

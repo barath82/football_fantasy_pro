@@ -15,23 +15,23 @@ export function Landing() {
   usePageTitle('FantasyBrahma — Fantasy EPL in one minute a week');
 
   return (
-    <div className="py-4">
-      <BrahmaIcon size={32} style={{ color: 'var(--pw-accent)' }} />
-      <div className="mt-4">
+    <div className="py-16 sm:py-24">
+      <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
+      <div className="mt-6">
         <GameweekBadge suffix="open now" />
       </div>
 
-      <h1 className="mt-2.5 text-[1.35rem] leading-[1.2]">
+      <h1 className="mt-2.5 text-4xl leading-[1.05] sm:text-6xl">
         Brahma is the guru of all <span style={{ color: 'var(--pw-accent)' }}>gurus</span>.
       </h1>
 
-      <div className="mt-5 flex flex-col gap-3 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
+      <div className="mt-10 flex flex-col gap-5 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
         <p>
           The expert among all experts. That's the seat everyone here is playing for — and FantasyBrahma is how you
           earn it, one gameweek at a time.
         </p>
-        <p className="flex items-start gap-2" style={{ color: 'var(--pw-fg)' }}>
-          <Clock size={14} className="mt-0.5 shrink-0" style={{ color: 'var(--pw-accent)' }} />
+        <p className="flex items-start gap-2.5" style={{ color: 'var(--pw-fg)' }}>
+          <Clock size={16} className="mt-1 shrink-0" style={{ color: 'var(--pw-accent)' }} />
           <span>
             We spend hours every week on fantasy content — podcasts, threads, spreadsheets, scout picks. This one
             needs a minute to complete.
@@ -44,30 +44,26 @@ export function Landing() {
         <p>Free. No team management. Just picks.</p>
       </div>
 
-      <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+      <div className="mt-10 flex flex-wrap items-center gap-4">
         <Link
           to="/challenges"
-          className="pw-focus rounded-full px-4 py-2 text-center text-[0.73rem] font-medium"
+          className="pw-focus inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium"
           style={{ background: 'var(--pw-accent)', color: 'var(--pw-accent-fg)' }}
         >
           Play this week
         </Link>
-        <Link
-          to="/leaderboard"
-          className="pw-focus rounded-full px-4 py-2 text-center text-[0.73rem] font-medium"
-          style={{ border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
-        >
+        <Link to="/leaderboard" className="pw-focus text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
           See the leaderboard
         </Link>
       </div>
 
-      <SectionBlock divider={false} className="mt-2">
-        <div className="flex flex-col">
+      <SectionBlock divider={false} className="mt-20">
+        <div className="grid gap-8 sm:grid-cols-3">
           {FEATURES.map((f) => (
-            <div key={f.title} className="py-3.5" style={{ borderTop: '1px solid var(--pw-border)' }}>
-              <f.icon size={22} style={{ color: 'var(--pw-accent)' }} />
-              <h3 className="pw-display mt-2 text-sm font-semibold">{f.title}</h3>
-              <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+            <div key={f.title} className="pt-5" style={{ borderTop: '1px solid var(--pw-border)' }}>
+              <f.icon size={26} style={{ color: 'var(--pw-accent)' }} />
+              <h3 className="pw-display mt-3 text-base">{f.title}</h3>
+              <p className="mt-1 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
                 {f.body}
               </p>
             </div>

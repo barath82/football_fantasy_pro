@@ -27,7 +27,7 @@ export function PredictorLayout() {
   return (
     <div className="pw flex min-h-screen flex-col" data-theme={theme}>
       <header className="pw-header">
-        <div className="mx-auto flex max-w-[560px] items-center justify-between px-5 py-3.5">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5">
           <NavLink
             to="/"
             className="pw-display pw-focus flex items-center gap-2 text-base"
@@ -69,7 +69,7 @@ export function PredictorLayout() {
         </div>
 
         {menuOpen && (
-          <nav className="mx-auto flex max-w-[560px] flex-col gap-1 px-5 pb-4 sm:hidden" style={{ borderTop: '1px solid var(--pw-border)' }}>
+          <nav className="mx-auto flex max-w-3xl flex-col gap-1 px-5 pb-4 sm:hidden" style={{ borderTop: '1px solid var(--pw-border)' }}>
             {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.to}
@@ -97,7 +97,7 @@ export function PredictorLayout() {
         )}
       </header>
 
-      <div className="mx-auto flex w-full max-w-[560px] flex-1 flex-col px-5">
+      <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5">
         <main className="flex-1">
           <Outlet />
         </main>

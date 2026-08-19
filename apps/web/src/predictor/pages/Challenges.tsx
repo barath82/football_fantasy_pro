@@ -125,10 +125,10 @@ export function Challenges() {
         : 'Submit picks';
 
   return (
-    <div className="py-4 pb-20">
+    <div className="pt-10 pb-32 sm:pt-16">
       <GameweekBadge />
-      <h1 className="mt-2 text-[1.2375rem]">Your picks</h1>
-      <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+      <h1 className="mt-2 text-3xl sm:text-4xl">Your picks</h1>
+      <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Six calls. About a minute.
       </p>
 

@@ -23,19 +23,10 @@
   color: var(--pw-fg);
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 13.5px;
+  font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-
-/* Tailwind's text-* utilities are rem-based off the document root, so they
-   don't inherit this file's font-size. Overriding them here (scoped to .pw,
-   specificity high enough to beat Tailwind's bare .text-xs etc. regardless
-   of import order) is what actually applies the -10% everywhere. */
-.pw .text-xs { font-size: 0.675rem; }
-.pw .text-sm { font-size: 0.7875rem; }
-.pw .text-base { font-size: 0.9rem; }
-.pw .text-lg { font-size: 1.0125rem; }
 
 .pw[data-theme='light'] {
   --pw-bg: oklch(0.99 0 0);
@@ -90,10 +81,10 @@
 }
 
 .pw-eyebrow {
-  font-size: 0.619rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: 400;
   color: var(--pw-fg-muted);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
