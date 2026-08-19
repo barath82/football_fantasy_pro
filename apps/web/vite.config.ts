@@ -8,6 +8,14 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        // Never let the service worker's offline/SPA fallback swallow a real
+        // navigation to the API (e.g. the Google/X OAuth redirect links) —
+        // without this, Workbox's default behavior serves the cached SPA
+        // shell for any unrecognized navigation, including /api/*, which
+        // silently broke login (see MEMORY.md, 2026-08-20).
+        navigateFallbackDenylist: [/^\/api\//],
+      },
       manifest: {
         name: 'Fantasy Analytics',
         short_name: 'FPL Analytics',
