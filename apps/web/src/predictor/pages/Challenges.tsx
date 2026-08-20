@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import { useCurrentGameweek } from '../../hooks/useGameweeks';
 import { useDeadline } from '../hooks/useDeadline';
@@ -25,6 +26,7 @@ export function Challenges() {
   usePageTitle('Weekly Challenges — FantasyBrahma');
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { current } = useCurrentGameweek();
   const gameweekFplId = current?.fplId ?? 1;
@@ -145,6 +147,10 @@ export function Challenges() {
     try {
       await api.post('/picks', draft);
       setSubmitted(true);
+      // My Picks reads /picks/mine via React Query — without this it keeps
+      // showing whatever was cached from before this submit (up to 5 min
+      // stale), not the pick that was just made.
+      await queryClient.invalidateQueries({ queryKey: ['picks', 'mine'] });
     } catch (err: any) {
       // Surfaces the real message for the deadline-just-passed edge case
       // (local clock ticked to "open" a beat before the server's did).
