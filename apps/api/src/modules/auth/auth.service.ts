@@ -1,12 +1,18 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import axios from 'axios';
+import * as bcrypt from 'bcrypt';
 import { randomBytes, createHash } from 'crypto';
 import { User, AuthProvider } from '../../database/entities/user.entity';
+import { PasswordResetToken } from '../../database/entities/password-reset-token.entity';
+import { EmailService } from '../email/email.service';
 import { SESSION_MAX_AGE_MS } from './auth.constants';
+
+const BCRYPT_ROUNDS = 12;
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 60 minutes
 
 export interface OAuthProfile {
   providerId: string;
@@ -26,8 +32,10 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(PasswordResetToken) private readonly resetTokenRepo: Repository<PasswordResetToken>,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly email: EmailService,
   ) {}
 
   // ─── Configuration state ──────────────────────────────────────────────────
@@ -137,6 +145,80 @@ export class AuthService {
       avatarUrl: profile.data.profile_image_url ?? null,
       handle: profile.data.username ? `@${profile.data.username}` : null,
     };
+  }
+
+  // ─── Email/password ───────────────────────────────────────────────────────
+
+  async registerWithEmail(email: string, password: string, displayName: string): Promise<User> {
+    // Check across ALL providers, not just 'email' — someone who signed up via
+    // Google/X with this same email shouldn't be able to create a second,
+    // separate account with a password on top of it.
+    const existing = await this.userRepo.findOneBy({ email });
+    if (existing) {
+      if (existing.provider === 'email') {
+        throw new ConflictException('An account with that email already exists.');
+      }
+      const providerLabel = existing.provider === 'google' ? 'Google' : 'X';
+      throw new ConflictException(
+        `An account with that email already exists — signed up with ${providerLabel}. Log in with ${providerLabel} instead.`,
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS);
+    const user = this.userRepo.create({
+      provider: 'email',
+      providerId: email, // no external provider id for email accounts — the email itself is the identifier
+      displayName,
+      email,
+      avatarUrl: null,
+      handle: null,
+      passwordHash,
+    });
+    await this.userRepo.save(user);
+    this.logger.log(`New user via email: ${displayName}`);
+    return user;
+  }
+
+  async loginWithEmail(email: string, password: string): Promise<User> {
+    const user = await this.userRepo.findOneBy({ provider: 'email', providerId: email });
+    // Same generic error whether the email doesn't exist or the password is wrong —
+    // distinguishing the two lets an attacker enumerate registered emails.
+    if (!user || !user.passwordHash || !(await bcrypt.compare(password, user.passwordHash))) {
+      throw new UnauthorizedException('Incorrect email or password.');
+    }
+    return user;
+  }
+
+  /** Always resolves without revealing whether the email is registered — same reasoning as loginWithEmail. */
+  async requestPasswordReset(email: string, resetUrlBase: string): Promise<void> {
+    const user = await this.userRepo.findOneBy({ provider: 'email', providerId: email });
+    if (!user) return;
+
+    const rawToken = randomBytes(32).toString('base64url');
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+    await this.resetTokenRepo.save(
+      this.resetTokenRepo.create({
+        userId: user.id,
+        tokenHash,
+        expiresAt: new Date(Date.now() + RESET_TOKEN_TTL_MS),
+        usedAt: null,
+      }),
+    );
+
+    await this.email.sendPasswordReset(email, `${resetUrlBase}?token=${rawToken}`);
+  }
+
+  async resetPassword(rawToken: string, newPassword: string): Promise<void> {
+    const tokenHash = createHash('sha256').update(rawToken).digest('hex');
+    const candidate = await this.resetTokenRepo.findOneBy({ tokenHash, usedAt: IsNull() });
+    if (!candidate || candidate.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('This reset link is invalid or has expired.');
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+    await this.userRepo.update({ id: candidate.userId }, { passwordHash });
+    await this.resetTokenRepo.update({ id: candidate.id }, { usedAt: new Date() });
   }
 
   // ─── User + session ───────────────────────────────────────────────────────

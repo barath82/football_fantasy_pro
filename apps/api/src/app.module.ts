@@ -7,6 +7,7 @@ import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import fplConfig from './config/fpl.config';
 import authConfig from './config/auth.config';
+import emailConfig from './config/email.config';
 import { Season } from './database/entities/season.entity';
 import { Team } from './database/entities/team.entity';
 import { Position } from './database/entities/position.entity';
@@ -18,6 +19,7 @@ import { OwnershipSnapshot } from './database/entities/ownership-snapshot.entity
 import { PriceHistory } from './database/entities/price-history.entity';
 import { ApiSyncLog } from './database/entities/api-sync-log.entity';
 import { User } from './database/entities/user.entity';
+import { PasswordResetToken } from './database/entities/password-reset-token.entity';
 import { Pick } from './database/entities/pick.entity';
 import { SyncModule } from './modules/sync/sync.module';
 import { PlayersModule } from './modules/players/players.module';
@@ -31,7 +33,7 @@ import { PicksModule } from './modules/picks/picks.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, databaseConfig, fplConfig, authConfig],
+      load: [appConfig, databaseConfig, fplConfig, authConfig, emailConfig],
       envFilePath: ['../../.env', '.env'],
     }),
     TypeOrmModule.forRootAsync({
@@ -46,7 +48,7 @@ import { PicksModule } from './modules/picks/picks.module';
         entities: [
           Season, Team, Position, Player, Gameweek,
           Fixture, PlayerGameweekStat, OwnershipSnapshot,
-          PriceHistory, ApiSyncLog, User, Pick,
+          PriceHistory, ApiSyncLog, User, Pick, PasswordResetToken,
         ],
         migrations: ['dist/database/migrations/*.js'],
         synchronize: false,

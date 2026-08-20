@@ -4,24 +4,14 @@ import { BrahmaIcon } from '../components/guru-icons';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { loginUrl, useAuth } from '../hooks/useAuth';
 
-const ERROR_MESSAGES: Record<string, string> = {
-  google_not_configured: "Google sign-in isn't set up yet — check back soon.",
-  x_not_configured: "X sign-in isn't set up yet — check back soon.",
-  state_mismatch: 'Something went wrong. Please try again.',
-  google_failed: 'Google sign-in failed. Please try again.',
-  x_failed: 'X sign-in failed. Please try again.',
-};
-
-export function Signup() {
-  usePageTitle('Sign up — FantasyBrahma');
+export function Login() {
+  usePageTitle('Log in — FantasyBrahma');
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { login } = useAuth();
 
   const [params] = useSearchParams();
   const returnTo = params.get('returnTo') || '/challenges';
-  const error = params.get('error');
 
-  const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -32,10 +22,10 @@ export function Signup() {
     setSubmitting(true);
     setFormError(null);
     try {
-      await register(email, password, displayName);
+      await login(email, password);
       navigate(returnTo);
     } catch (err: any) {
-      setFormError(err.response?.data?.message ?? 'Could not create your account. Please try again.');
+      setFormError(err.response?.data?.message ?? 'Incorrect email or password.');
     } finally {
       setSubmitting(false);
     }
@@ -45,17 +35,11 @@ export function Signup() {
     <div className="mx-auto max-w-md py-16 sm:py-24">
       <div className="flex flex-col items-center text-center">
         <BrahmaIcon size={34} style={{ color: 'var(--pw-accent)' }} />
-        <h1 className="mt-4 text-3xl">Become a guru</h1>
+        <h1 className="mt-4 text-3xl">Welcome back</h1>
         <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
-          One account, a minute a week. Climb from guru to Brahma as the season plays out.
+          Log in to see your picks and where you stand.
         </p>
       </div>
-
-      {error && (
-        <p className="mt-4 rounded-lg px-3 py-2 text-center text-xs" style={{ background: 'var(--pw-surface)', color: 'var(--pw-negative)' }}>
-          {ERROR_MESSAGES[error] ?? 'Something went wrong. Please try again.'}
-        </p>
-      )}
 
       <div className="mt-10 flex flex-col gap-3">
         <a
@@ -64,9 +48,6 @@ export function Signup() {
           style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', display: 'block' }}
         >
           <p className="text-sm">Continue with Google</p>
-          <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-            Fast sign-in. You can link FPL later.
-          </p>
         </a>
       </div>
 
@@ -77,16 +58,6 @@ export function Signup() {
       </div>
 
       <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-3">
-        <input
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          placeholder="Display name"
-          required
-          maxLength={60}
-          className="pw-focus rounded-lg px-3 py-2.5 text-sm"
-          style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
-        />
         <input
           type="email"
           value={email}
@@ -100,9 +71,8 @@ export function Signup() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password (min. 8 characters)"
+          placeholder="Password"
           required
-          minLength={8}
           className="pw-focus rounded-lg px-3 py-2.5 text-sm"
           style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
         />
@@ -111,25 +81,26 @@ export function Signup() {
             {formError}
           </p>
         )}
+        <div className="flex justify-end">
+          <Link to="/forgot-password" className="pw-focus text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+            Forgot password?
+          </Link>
+        </div>
         <button
           type="submit"
           disabled={submitting}
           className="pw-focus mt-1 w-full rounded-lg px-4 py-3 text-sm font-semibold disabled:opacity-50"
           style={{ background: 'var(--pw-accent)', color: 'var(--pw-accent-fg)' }}
         >
-          {submitting ? 'Creating account…' : 'Create account'}
+          {submitting ? 'Logging in…' : 'Log in'}
         </button>
       </form>
 
       <p className="mt-6 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-        Already have an account?{' '}
-        <Link to={`/login?returnTo=${encodeURIComponent(returnTo)}`} className="pw-focus" style={{ color: 'var(--pw-accent)' }}>
-          Log in
+        New here?{' '}
+        <Link to={`/signup?returnTo=${encodeURIComponent(returnTo)}`} className="pw-focus" style={{ color: 'var(--pw-accent)' }}>
+          Create an account
         </Link>
-      </p>
-
-      <p className="mt-8 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-        By continuing you agree to play fair and not shout at the fixture computer.
       </p>
     </div>
   );

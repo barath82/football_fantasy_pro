@@ -3,7 +3,7 @@ import { api } from '../../lib/api';
 
 export interface AuthUser {
   id: string;
-  provider: 'google' | 'x';
+  provider: 'google' | 'x' | 'email';
   displayName: string;
   avatarUrl: string | null;
   email: string | null;
@@ -46,11 +46,36 @@ export function useAuth() {
     return user as AuthUser;
   };
 
+  /** Refetches /auth/me so the session cookie a register/login response just set actually takes effect app-wide. */
+  const refreshSession = () => queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+
+  const register = async (email: string, password: string, displayName: string) => {
+    await api.post('/auth/register', { email, password, displayName });
+    await refreshSession();
+  };
+
+  const login = async (email: string, password: string) => {
+    await api.post('/auth/login', { email, password });
+    await refreshSession();
+  };
+
+  const forgotPassword = async (email: string) => {
+    await api.post('/auth/forgot-password', { email });
+  };
+
+  const resetPassword = async (token: string, password: string) => {
+    await api.post('/auth/reset-password', { token, password });
+  };
+
   return {
     isLoading: query.isLoading,
     isAuthenticated: query.data?.authenticated ?? false,
     user: query.data?.user ?? null,
     logout,
     updateFplTeamId,
+    register,
+    login,
+    forgotPassword,
+    resetPassword,
   };
 }

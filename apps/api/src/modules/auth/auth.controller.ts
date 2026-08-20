@@ -1,11 +1,16 @@
 import { Body, Controller, Get, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { IsString, MaxLength } from 'class-validator';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import type { AuthedRequest } from './auth.guard';
 import { SESSION_MAX_AGE_MS } from './auth.constants';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 class UpdateFplTeamIdDto {
   @IsString()
@@ -115,6 +120,48 @@ export class AuthController {
     } catch (err: any) {
       return res.redirect(this.frontendUrl(`/signup?error=x_failed&returnTo=${encodeURIComponent(returnTo)}`));
     }
+  }
+
+  // ─── Email/password ───────────────────────────────────────────────────────
+  // Rate-limited on top of the app default — these are the only endpoints an
+  // attacker can brute-force (OAuth has no password to guess).
+
+  @Post('register')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  async register(@Body() dto: RegisterDto, @Res() res: Response) {
+    const user = await this.auth.registerWithEmail(dto.email, dto.password, dto.displayName);
+    const token = this.auth.issueToken(user);
+    res.cookie(SESSION_COOKIE, token, this.cookieOpts(SESSION_MAX_AGE_MS));
+    return res.json({ id: user.id, displayName: user.displayName, email: user.email });
+  }
+
+  @Post('login')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  async login(@Body() dto: LoginDto, @Res() res: Response) {
+    const user = await this.auth.loginWithEmail(dto.email, dto.password);
+    const token = this.auth.issueToken(user);
+    res.cookie(SESSION_COOKIE, token, this.cookieOpts(SESSION_MAX_AGE_MS));
+    return res.json({ id: user.id, displayName: user.displayName, email: user.email });
+  }
+
+  @Post('forgot-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    const resetUrlBase = `${this.config.get('auth.frontendUrl')}/reset-password`;
+    await this.auth.requestPasswordReset(dto.email, resetUrlBase);
+    // Always the same response — don't reveal whether the email is registered.
+    return { ok: true };
+  }
+
+  @Post('reset-password')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  async resetPassword(@Body() dto: ResetPasswordDto) {
+    await this.auth.resetPassword(dto.token, dto.password);
+    return { ok: true };
   }
 
   // ─── Session ──────────────────────────────────────────────────────────────

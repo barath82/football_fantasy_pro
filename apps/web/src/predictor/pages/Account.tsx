@@ -75,7 +75,7 @@ export function Account() {
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold">{user.displayName}</p>
           <p className="mt-0.5 text-xs capitalize" style={{ color: 'var(--pw-fg-muted)' }}>
-            Signed in with {user.provider === 'x' ? 'X' : 'Google'}
+            Signed in with {user.provider === 'x' ? 'X' : user.provider === 'google' ? 'Google' : 'email'}
           </p>
         </div>
       </div>
