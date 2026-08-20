@@ -20,7 +20,7 @@ const GURUS = [
 ];
 
 export function Landing() {
-  usePageTitle('FantasyBrahma — Fantasy EPL in one minute a week');
+  usePageTitle('FantasyBrahma — Five Gurus. One Creator. Infinite gameweeks.');
 
   return (
     <div className="py-16 sm:py-24">
