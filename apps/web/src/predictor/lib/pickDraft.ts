@@ -5,12 +5,16 @@
  */
 export interface PickDraft {
   gameweekFplId: number;
-  transferInPlayerId: number;
-  transferOutPlayerId: number;
+  /** Not applicable in Gameweek 1 — Transfer Guru is disabled, so these are omitted. */
+  transferInPlayerId?: number;
+  transferOutPlayerId?: number;
   differentialSucceedPlayerId: number;
   differentialBlankPlayerId: number;
   formation: string;
   captainPlayerId: number;
+  chipPick?: string;
+  csSucceedTeamId?: number;
+  csFailTeamId?: number;
 }
 
 const KEY = 'pw_pending_picks';

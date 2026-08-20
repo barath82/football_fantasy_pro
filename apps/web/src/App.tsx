@@ -19,6 +19,7 @@ import { PredictorLayout } from './predictor/components/PredictorLayout';
 import { Landing } from './predictor/pages/Landing';
 import { Challenges } from './predictor/pages/Challenges';
 import { Leaderboard } from './predictor/pages/Leaderboard';
+import { About } from './predictor/pages/About';
 import { Signup } from './predictor/pages/Signup';
 import { Login } from './predictor/pages/Login';
 import { ForgotPassword } from './predictor/pages/ForgotPassword';
@@ -42,6 +43,7 @@ export default function App() {
         <Route index element={<Landing />} />
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/about" element={<About />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />

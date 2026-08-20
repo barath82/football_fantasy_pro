@@ -10,10 +10,20 @@ interface PlayerPickerProps {
   minOwnership?: number;
   maxOwnership?: number;
   placeholder?: string;
+  /** Renders non-interactive and dimmed — e.g. Transfer Guru on Gameweek 1. */
+  disabled?: boolean;
 }
 
 /** Searchable player select, backed by the real /players API (name + live ownership %). */
-export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnership, placeholder = 'Search players' }: PlayerPickerProps) {
+export function PlayerPicker({
+  label,
+  value,
+  onChange,
+  minOwnership,
+  maxOwnership,
+  placeholder = 'Search players',
+  disabled = false,
+}: PlayerPickerProps) {
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -38,7 +48,7 @@ export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnershi
   const results = searchActive ? (data?.data ?? []) : [];
 
   return (
-    <div className="relative">
+    <div className="relative" style={disabled ? { pointerEvents: 'none' } : undefined}>
       <label className="mb-1.5 block text-[0.63rem] font-medium" style={{ color: 'var(--pw-fg-muted)' }}>
         {label}
       </label>
@@ -47,6 +57,7 @@ export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnershi
         <button
           type="button"
           onClick={() => setOpen(true)}
+          disabled={disabled}
           className="pw-focus flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm"
           style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)' }}
         >
@@ -66,6 +77,7 @@ export function PlayerPicker({ label, value, onChange, minOwnership, maxOwnershi
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
+            disabled={disabled}
             className="pw-focus w-full rounded-lg py-2 pl-9 pr-3 text-sm"
             style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
           />

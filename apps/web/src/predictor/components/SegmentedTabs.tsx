@@ -14,7 +14,15 @@ interface SegmentedTabsProps {
 
 export function SegmentedTabs({ tabs, active, onChange }: SegmentedTabsProps) {
   return (
-    <div className="-mx-5 overflow-x-auto px-5">
+    <div
+      className="-mx-5 overflow-x-auto px-5"
+      // Fades both edges so a mobile-width tab row (more tabs than fit) reads
+      // as scrollable at a glance, instead of looking like a hard cutoff.
+      style={{
+        WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)',
+        maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)',
+      }}
+    >
       <div
         role="tablist"
         className="inline-flex min-w-full gap-1 rounded-full p-1"

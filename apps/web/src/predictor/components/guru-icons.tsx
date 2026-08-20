@@ -91,6 +91,32 @@ export function StrategyGuruIcon(props: IconProps) {
   );
 }
 
+/** Guru + clock face (right chip, right week — or wasted). */
+export function ChipGuruIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <GuruShell badge />
+      <g strokeWidth={1.5}>
+        <circle cx="26" cy="24" r="5" />
+        <path d="M26 21.3v3l2.3 1.3" />
+      </g>
+    </Base>
+  );
+}
+
+/** Guru + shield (the wall that holds, or doesn't). */
+export function CSGuruIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <GuruShell badge />
+      <path
+        d="M26 19.3l4.5 1.7v3.5c0 3-1.9 5.4-4.5 6.6-2.6-1.2-4.5-3.6-4.5-6.6v-3.5z"
+        strokeWidth={1.5}
+      />
+    </Base>
+  );
+}
+
 /** Guru with a full halo — the guru of all gurus. */
 export function OracleIcon(props: IconProps) {
   return (

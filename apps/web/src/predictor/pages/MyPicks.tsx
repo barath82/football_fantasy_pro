@@ -1,14 +1,34 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
+import { useCurrentGameweek } from '../../hooks/useGameweeks';
 import { ExpandableRow } from '../components/ExpandableRow';
-import { DifferentialGuruIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
+import {
+  CSGuruIcon,
+  ChipGuruIcon,
+  DifferentialGuruIcon,
+  StrategyGuruIcon,
+  TransferGuruIcon,
+} from '../components/guru-icons';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useRequireAuth } from '../hooks/useRequireAuth';
+import { useDeadline } from '../hooks/useDeadline';
+
+const CHIP_LABELS: Record<string, string> = {
+  wildcard: 'Wildcard',
+  free_hit: 'Free Hit',
+  bench_boost: 'Bench Boost',
+  triple_captain: 'Triple Captain',
+};
 
 interface PickPlayer {
   webName: string;
   team: string | null;
+}
+
+interface PickTeam {
+  name: string;
+  shortName: string;
 }
 
 interface MyPick {
@@ -21,6 +41,9 @@ interface MyPick {
   differentialSucceed: PickPlayer | null;
   differentialBlank: PickPlayer | null;
   captain: PickPlayer | null;
+  chipPick: string | null;
+  csSucceedTeam: PickTeam | null;
+  csFailTeam: PickTeam | null;
 }
 
 function PlayerLine({ label, player }: { label: string; player: PickPlayer | null }) {
@@ -30,6 +53,15 @@ function PlayerLine({ label, player }: { label: string; player: PickPlayer | nul
       <span style={{ color: 'var(--pw-fg)' }}>
         {player ? `${player.webName}${player.team ? ` · ${player.team}` : ''}` : '—'}
       </span>
+    </div>
+  );
+}
+
+function ValueLine({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div className="flex items-baseline justify-between border-b py-1.5 text-xs" style={{ borderColor: 'var(--pw-border)' }}>
+      <span style={{ color: 'var(--pw-fg-muted)' }}>{label}</span>
+      <span style={{ color: 'var(--pw-fg)' }}>{value ?? '—'}</span>
     </div>
   );
 }
@@ -46,6 +78,12 @@ export function MyPicks() {
     },
     enabled: isAuthenticated,
   });
+
+  // Picks can only be edited on the Challenges page itself, and only for the
+  // current gameweek before its deadline — this just points there when that
+  // applies, rather than duplicating the edit UI here.
+  const { current } = useCurrentGameweek();
+  const { expired: deadlinePassed } = useDeadline(current?.deadlineTime ?? null);
 
   if (authLoading || !isAuthenticated) return null;
 
@@ -86,6 +124,17 @@ export function MyPicks() {
                 </p>
               </div>
             }
+            action={
+              pick.gameweekFplId === current?.fplId && !deadlinePassed ? (
+                <Link
+                  to="/challenges"
+                  className="pw-focus shrink-0 text-xs font-medium"
+                  style={{ color: 'var(--pw-accent)' }}
+                >
+                  Edit picks
+                </Link>
+              ) : undefined
+            }
           >
             <div className="flex flex-col gap-4 pl-1">
               <div>
@@ -116,6 +165,23 @@ export function MyPicks() {
                   <span style={{ color: 'var(--pw-fg)' }}>{pick.formation ?? '—'}</span>
                 </div>
                 <PlayerLine label="Captain" player={pick.captain} />
+              </div>
+
+              <div>
+                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+                  <ChipGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
+                  Chip Guru
+                </p>
+                <ValueLine label="Chip" value={pick.chipPick ? (CHIP_LABELS[pick.chipPick] ?? pick.chipPick) : null} />
+              </div>
+
+              <div>
+                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+                  <CSGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
+                  CS Guru
+                </p>
+                <ValueLine label="To keep a clean sheet" value={pick.csSucceedTeam?.name ?? null} />
+                <ValueLine label="Favored to concede" value={pick.csFailTeam?.name ?? null} />
               </div>
             </div>
           </ExpandableRow>

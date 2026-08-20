@@ -1,14 +1,22 @@
 import { Link } from 'react-router-dom';
-import { Clock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { GameweekBadge } from '../components/GameweekBadge';
-import { SectionBlock } from '../components/SectionBlock';
-import { BrahmaIcon, DifferentialGuruIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
+import {
+  BrahmaIcon,
+  CSGuruIcon,
+  ChipGuruIcon,
+  DifferentialGuruIcon,
+  StrategyGuruIcon,
+  TransferGuruIcon,
+} from '../components/guru-icons';
 import { usePageTitle } from '../hooks/usePageTitle';
 
-const FEATURES = [
-  { icon: TransferGuruIcon, title: 'Transfer Guru', body: 'One in, one out. Track your net points every week.' },
-  { icon: DifferentialGuruIcon, title: 'Differential Guru', body: 'Nail the <10% hit. Call the >20% blank.' },
-  { icon: StrategyGuruIcon, title: 'Strategy Guru', body: 'Set your formation and captain. Best structure wins.' },
+const GURUS = [
+  { icon: TransferGuruIcon, title: 'Transfer Guru', body: 'One in, One out. Judged on the swing and not the story.' },
+  { icon: DifferentialGuruIcon, title: 'Differential Guru', body: 'Finds the player nobody owns, before everybody wishes they had.' },
+  { icon: StrategyGuruIcon, title: 'Strategy Guru', body: 'Back a formation, not a team. Which shape scores when it matters?' },
+  { icon: ChipGuruIcon, title: 'Chip Guru', body: 'Timing is everything. Right chip, right week - or wasted entirely.' },
+  { icon: CSGuruIcon, title: 'CS Guru', body: 'Risk has a price. Some walls hold when nobody expects it.' },
 ];
 
 export function Landing() {
@@ -21,55 +29,79 @@ export function Landing() {
         <GameweekBadge suffix="open now" />
       </div>
 
-      <h1 className="mt-4 text-4xl leading-[1.05] sm:text-6xl">
-        Brahma is the guru of all <span style={{ color: 'var(--pw-accent)' }}>gurus</span>.
+      <h1 className="mt-[17.6px] text-4xl leading-[1.05] sm:text-6xl">
+        Brahma sees every <span style={{ color: 'var(--pw-accent)' }}>gameweek</span> in his infinite{' '}
+        <span style={{ color: 'var(--pw-accent)' }}>wisdom</span>. Now you can too!
       </h1>
 
-      <div className="mt-10 flex flex-col gap-5 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
+      <div className="mt-10 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
         <p>
-          The expert among all experts. That's the seat everyone here is playing for — and FantasyBrahma is how you
-          earn it, one gameweek at a time.
+          Before every deadline, fantasy football is chaos - transfers, captains, team formations, chips - multiple
+          sites/forums to navigate, hour long podcasts and videos to consume - infinite possibilities but finite
+          time. Brahma sees it all at once through his four faces, so he deployed five Gurus to create a game to
+          prove, week after week, which fantasy instincts actually hold up.
         </p>
-        <p className="flex items-start gap-2.5" style={{ color: 'var(--pw-fg)' }}>
-          <Clock size={16} className="mt-1 shrink-0" style={{ color: 'var(--pw-accent)' }} />
-          <span>
-            We spend hours every week on fantasy content — podcasts, threads, spreadsheets, scout picks. This one
-            needs a minute to complete.
-          </span>
-        </p>
-        <p>
-          Three gurus, six calls, built on top of the official EPL game. Points accumulate across the season and the
-          leaderboard tells the truth. Whoever sits on top at the end is the Brahma.
-        </p>
-        <p>Free. No team management. Just picks.</p>
+
+        <div>
+          <h2 className="pw-display mb-2 text-base" style={{ color: 'var(--pw-fg)' }}>
+            The problem, in one line.
+          </h2>
+          <p>
+            Every FPL site sells the same captain picks and differentials dressed differently. We score ours instead
+            of just publishing them - so you can finally tell who's actually right.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="pw-display mb-2 text-base" style={{ color: 'var(--pw-fg)' }}>
+            Play this game and become a better FPL manager
+          </h2>
+          <p>
+            Five Gurus, five weekly calls - differentials, captains, chips, formations, clean sheets. Pick your own
+            answer alongside them and see how you stack up.
+          </p>
+        </div>
+
+        <p style={{ color: 'var(--pw-fg)' }}>Knowledge is Free and so is this game.</p>
       </div>
 
       <div className="mt-10 flex flex-wrap items-center gap-4">
         <Link
           to="/challenges"
-          className="pw-focus inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium"
+          className="pw-focus pw-cta-primary inline-flex items-center gap-2 rounded-md px-5 py-3 text-sm font-medium"
           style={{ background: 'var(--pw-accent)', color: 'var(--pw-accent-fg)' }}
         >
-          Play this week
+          Make your first call <ArrowRight size={16} />
         </Link>
-        <Link to="/leaderboard" className="pw-focus text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
-          See the leaderboard
+        <Link
+          to="/leaderboard"
+          className="pw-focus pw-cta-secondary inline-flex items-center gap-2 text-sm"
+          style={{ color: 'var(--pw-fg-muted)' }}
+        >
+          See the leaderboard <ArrowRight size={14} />
         </Link>
       </div>
 
-      <SectionBlock divider={false} className="mt-20">
-        <div className="grid gap-8 sm:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="pt-5" style={{ borderTop: '1px solid var(--pw-border)' }}>
-              <f.icon size={26} style={{ color: 'var(--pw-accent)' }} />
-              <h3 className="pw-display mt-3 text-base">{f.title}</h3>
-              <p className="mt-1 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
-                {f.body}
-              </p>
-            </div>
-          ))}
-        </div>
-      </SectionBlock>
+      <h2 className="pw-display mt-[104px] text-xl">Meet the Gurus</h2>
+
+      <div className="mt-8 grid gap-5 sm:grid-cols-6">
+        {GURUS.map((g, i) => (
+          <div
+            key={g.title}
+            className={`pw-guru-card rounded-lg p-5 sm:col-span-2 ${i === 3 ? 'sm:col-start-2' : ''}`}
+          >
+            <g.icon size={26} style={{ color: 'var(--pw-accent)' }} />
+            <h3 className="pw-display mt-3 text-base">{g.title}</h3>
+            <p className="mt-1 text-sm leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
+              {g.body}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <p className="mt-[76.8px] text-center text-2xl font-medium italic leading-snug tracking-tight sm:text-3xl">
+        Five Gurus. One Creator. Infinite gameweeks.
+      </p>
     </div>
   );
 }

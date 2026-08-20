@@ -10,6 +10,7 @@ import { AccountAvatarMenu, AccountMobileLinks } from './AccountMenu';
 const NAV_LINKS = [
   { to: '/challenges', label: 'Challenges' },
   { to: '/leaderboard', label: 'Leaderboard' },
+  { to: '/about', label: 'About' },
 ];
 
 function navLinkStyle(isActive: boolean) {
@@ -47,7 +48,7 @@ export function PredictorLayout() {
               <AccountAvatarMenu />
             ) : (
               <NavLink to="/signup" className="pw-focus text-xs" style={({ isActive }) => navLinkStyle(isActive)}>
-                Sign up
+                Sign up / Login
               </NavLink>
             )}
             <ThemeToggle />
@@ -90,7 +91,7 @@ export function PredictorLayout() {
                 className="pw-focus py-2.5 text-sm"
                 style={({ isActive }) => navLinkStyle(isActive)}
               >
-                Sign up
+                Sign up / Login
               </NavLink>
             )}
           </nav>
@@ -101,6 +102,8 @@ export function PredictorLayout() {
         <main className="flex-1">
           <Outlet />
         </main>
+
+        <hr className="pw-divider mt-12" />
 
         <footer className="py-6 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
           FantasyBrahma · Not affiliated with the Premier League or Fantasy Premier League.

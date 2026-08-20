@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useDeadline } from '../hooks/useDeadline';
 
 interface CountdownProps {
   /** ISO timestamp (or Date) to count down to. */
@@ -21,23 +21,13 @@ function formatRemaining(ms: number): string {
 
 /** Live-ticking "closes in ..." countdown to a gameweek deadline. */
 export function Countdown({ target, expiredLabel = 'Picks locked' }: CountdownProps) {
-  const targetMs = new Date(target).getTime();
-  const [now, setNow] = useState(() => Date.now());
+  const { msRemaining, expired } = useDeadline(target);
 
-  useEffect(() => {
-    if (Number.isNaN(targetMs)) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(id);
-  }, [targetMs]);
-
-  if (Number.isNaN(targetMs)) return null;
-
-  const diff = targetMs - now;
-  const expired = diff <= 0;
+  if (msRemaining === null) return null;
 
   return (
-    <p className="pw-eyebrow mt-2" style={expired ? { color: 'var(--pw-negative)' } : undefined}>
-      {expired ? expiredLabel : `Closes in ${formatRemaining(diff)}`}
+    <p className="pw-eyebrow mt-[8.8px]" style={expired ? { color: 'var(--pw-negative)' } : undefined}>
+      {expired ? expiredLabel : `Closes in ${formatRemaining(msRemaining)}`}
     </p>
   );
 }

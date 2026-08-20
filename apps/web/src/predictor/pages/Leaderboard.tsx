@@ -28,7 +28,7 @@ export function Leaderboard() {
 
   return (
     <div className="py-10 sm:py-16">
-      <GameweekBadge />
+      <GameweekBadge showCountdown={false} />
       <h1 className="mt-2 text-3xl sm:text-4xl">Leaderboard</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Who's actually good at this. Tap a row to look deeper.
@@ -39,6 +39,11 @@ export function Leaderboard() {
       </div>
 
       <div className="mt-4">
+        {rows.length === 0 && (
+          <p className="py-10 text-center text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
+            No standings yet — check back once picks start getting scored.
+          </p>
+        )}
         {rows.map((expert, index) => (
           <ExpandableRow
             key={expert.id}

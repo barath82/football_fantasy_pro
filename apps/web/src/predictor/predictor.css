@@ -35,7 +35,10 @@
   --pw-border: oklch(0.87 0 0);
   --pw-fg: oklch(0.17 0 0);
   --pw-fg-muted: oklch(0.45 0 0);
-  --pw-accent: oklch(0.66 0.19 50);
+  /* Darkened from oklch(0.66 0.19 50) — that value was 3.23:1 against this
+     background, failing WCAG AA (4.5:1) for normal-size text. This clears
+     4.5:1 against bg/surface and still reads as the same brand orange. */
+  --pw-accent: oklch(0.56 0.17 50);
   --pw-accent-fg: oklch(0.99 0.01 60);
   --pw-up: oklch(0.54 0.16 145);
   --pw-negative: oklch(0.55 0.17 25);
@@ -46,7 +49,11 @@
 .pw, .pw *, .pw *::before, .pw *::after {
   box-sizing: border-box;
 }
-.pw h1, .pw h2, .pw h3, .pw p, .pw figure {
+/* :where() keeps this at zero specificity so it never out-ranks a plain
+   Tailwind margin utility (e.g. mt-4) applied directly to one of these
+   elements — a bare ".pw h1"-style selector would otherwise always win
+   over a single utility class regardless of source order. */
+:where(.pw h1, .pw h2, .pw h3, .pw p, .pw figure) {
   margin: 0;
 }
 .pw button {
@@ -99,6 +106,29 @@
 .pw-focus:focus-visible {
   outline: 2px solid var(--pw-accent);
   outline-offset: 2px;
+}
+
+.pw-cta-primary {
+  transition: opacity 0.15s ease;
+}
+.pw-cta-primary:hover {
+  opacity: 0.9;
+}
+.pw-cta-secondary {
+  transition: color 0.15s ease;
+}
+.pw-cta-secondary:hover {
+  color: var(--pw-fg);
+}
+
+.pw-guru-card {
+  background: var(--pw-surface);
+  border: 1px solid var(--pw-border);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.pw-guru-card:hover {
+  border-color: color-mix(in oklch, var(--pw-accent) 50%, var(--pw-border));
+  background: var(--pw-surface-2);
 }
 
 .pw-header {

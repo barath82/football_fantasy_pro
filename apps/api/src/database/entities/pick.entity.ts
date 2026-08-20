@@ -2,6 +2,9 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 import { User } from './user.entity';
 import { Gameweek } from './gameweek.entity';
 import { Player } from './player.entity';
+import { Team } from './team.entity';
+
+export type ChipPick = 'wildcard' | 'free_hit' | 'bench_boost' | 'triple_captain';
 
 /**
  * One user's six weekly picks for one gameweek. All four player fields
@@ -70,6 +73,26 @@ export class Pick {
   @ManyToOne(() => Player, { nullable: true })
   @JoinColumn({ name: 'captain_player_id' })
   captainPlayer: Player | null;
+
+  /** Chip Guru — no scoring logic yet (see MEMORY.md); stored for when that lands. */
+  @Column({ name: 'chip_pick', type: 'varchar', nullable: true })
+  chipPick: ChipPick | null;
+
+  /** CS Guru — team predicted to keep a clean sheet. */
+  @Column({ name: 'cs_succeed_team_id', type: 'int', nullable: true })
+  csSucceedTeamId: number | null;
+
+  @ManyToOne(() => Team, { nullable: true })
+  @JoinColumn({ name: 'cs_succeed_team_id' })
+  csSucceedTeam: Team | null;
+
+  /** CS Guru — favored team predicted to concede. */
+  @Column({ name: 'cs_fail_team_id', type: 'int', nullable: true })
+  csFailTeamId: number | null;
+
+  @ManyToOne(() => Team, { nullable: true })
+  @JoinColumn({ name: 'cs_fail_team_id' })
+  csFailTeam: Team | null;
 
   @CreateDateColumn({ name: 'submitted_at' })
   submittedAt: Date;
