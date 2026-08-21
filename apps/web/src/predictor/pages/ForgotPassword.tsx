@@ -5,7 +5,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../hooks/useAuth';
 
 export function ForgotPassword() {
-  usePageTitle('Reset password — FantasyBrahma');
+  usePageTitle('Reset password - FantasyBrahma');
   const { forgotPassword } = useAuth();
 
   const [email, setEmail] = useState('');

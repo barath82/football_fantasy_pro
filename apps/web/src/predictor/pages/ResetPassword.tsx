@@ -5,7 +5,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../hooks/useAuth';
 
 export function ResetPassword() {
-  usePageTitle('Set a new password — FantasyBrahma');
+  usePageTitle('Set a new password - FantasyBrahma');
   const navigate = useNavigate();
   const { resetPassword } = useAuth();
   const [params] = useSearchParams();
@@ -23,7 +23,7 @@ export function ResetPassword() {
       return;
     }
     if (!token) {
-      setFormError('This reset link is missing its token — please use the link from your email.');
+      setFormError('This reset link is missing its token - please use the link from your email.');
       return;
     }
     setSubmitting(true);

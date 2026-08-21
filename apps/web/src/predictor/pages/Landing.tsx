@@ -20,10 +20,10 @@ const GURUS = [
 ];
 
 export function Landing() {
-  usePageTitle('FantasyBrahma — Five Gurus. One Creator. Infinite gameweeks.');
+  usePageTitle('FantasyBrahma - Five Gurus. One Creator. Infinite gameweeks.');
 
   return (
-    <div className="pt-[17.2px] pb-[25.6px] sm:pt-[25.81px] sm:pb-[38.4px]">
+    <div className="pt-[17.2px] pb-[5.12px] sm:pt-[25.81px] sm:pb-[7.68px]">
       <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
       <div className="mt-6">
         <GameweekBadge suffix="open now" />
@@ -41,11 +41,11 @@ export function Landing() {
       <h2 className="pw-display mt-10 text-[23.4px]">What</h2>
       <div className="mt-3 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
         <p style={{ color: 'var(--pw-fg)' }}>
-          Five Gurus. Five weekly calls. Built on top of your actual FPL game — no team import, no stakes, just
+          Five Gurus. Five weekly calls. Built on top of your actual FPL game - no team import, no stakes, just
           picks.
         </p>
         <p>
-          Legend has it Brahma sees every gameweek at once through his four faces — every fixture, every form curve,
+          Legend has it Brahma sees every gameweek at once through his four faces - every fixture, every form curve,
           every deadline. So he sent five Gurus into the game, each to test one decision every manager already
           makes: your captain, your differential, your chip timing, your formation, your transfer.
         </p>
@@ -87,7 +87,7 @@ export function Landing() {
           </h3>
           <p>
             Open ten sites before a deadline and you get the same captain, the same three differentials, the same
-            chip-strategy thread — just reworded. Half of it's AI-generated now, and it shows. Everyone's reading
+            chip-strategy thread - just reworded. Half of it's AI-generated now, and it shows. Everyone's reading
             the same takes, so everyone's building the same team. The chips get played on the same gameweek. The
             "differentials" aren't even differentials anymore, because 40% of the league owns them too.
           </p>
@@ -99,21 +99,21 @@ export function Landing() {
       </div>
 
       {/* HOW / VALUE — the payoff */}
-      <h2 className="pw-display mt-10 text-[23.4px]">How / Value</h2>
+      <h2 className="pw-display mt-10 text-[23.4px]">How</h2>
       <div className="mt-3 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
         <p>
           Last season's top FantasyBrahma manager had never played FPL before. No history, no favorite pundit, no
-          inherited chip plan. He just made calls — and beat managers who'd been playing for a decade.
+          inherited chip plan. He just made calls - and beat managers who'd been playing for a decade.
         </p>
         <p>
           That's not luck. That's what happens when you back your gut instead of the herd, and actually track
-          whether it works. FantasyBrahma is a live proving ground for that instinct — five weekly calls that turn
+          whether it works. FantasyBrahma is a live proving ground for that instinct - five weekly calls that turn
           your private "I think this is the pick" into a public, scored result. Win or lose, you learn something
-          real about your own game — not what an "expert" thinks, but what actually works when you commit to it.
+          real about your own game - not what an "expert" thinks, but what actually works when you commit to it.
         </p>
         <p>
           Play it as a side game. Use it to sharpen the calls you make in your real team. Either way, it's the
-          spark that makes the season fun to argue about again — especially in your mini-league group chat.
+          spark that makes the season fun to argue about again - especially in your mini-league group chat.
         </p>
       </div>
 

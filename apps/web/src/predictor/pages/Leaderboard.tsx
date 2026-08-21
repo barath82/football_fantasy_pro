@@ -21,7 +21,7 @@ function DeltaArrow({ delta }: { delta: number }) {
 }
 
 export function Leaderboard() {
-  usePageTitle('Guru Leaderboard — FantasyBrahma');
+  usePageTitle('Guru Leaderboard - FantasyBrahma');
 
   const [tab, setTab] = useState<LeaderboardKey>('oracle');
   const rows = getLeaderboard(tab);
@@ -41,7 +41,7 @@ export function Leaderboard() {
       <div className="mt-4">
         {rows.length === 0 && (
           <p className="py-10 text-center text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
-            No standings yet — check back once picks start getting scored.
+            No standings yet - check back once picks start getting scored.
           </p>
         )}
         {rows.map((expert, index) => (

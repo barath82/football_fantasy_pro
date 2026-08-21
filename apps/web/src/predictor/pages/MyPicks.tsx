@@ -51,7 +51,7 @@ function PlayerLine({ label, player }: { label: string; player: PickPlayer | nul
     <div className="flex items-baseline justify-between border-b py-1.5 text-xs" style={{ borderColor: 'var(--pw-border)' }}>
       <span style={{ color: 'var(--pw-fg-muted)' }}>{label}</span>
       <span style={{ color: 'var(--pw-fg)' }}>
-        {player ? `${player.webName}${player.team ? ` · ${player.team}` : ''}` : '—'}
+        {player ? `${player.webName}${player.team ? ` · ${player.team}` : ''}` : '-'}
       </span>
     </div>
   );
@@ -61,13 +61,13 @@ function ValueLine({ label, value }: { label: string; value: string | null }) {
   return (
     <div className="flex items-baseline justify-between border-b py-1.5 text-xs" style={{ borderColor: 'var(--pw-border)' }}>
       <span style={{ color: 'var(--pw-fg-muted)' }}>{label}</span>
-      <span style={{ color: 'var(--pw-fg)' }}>{value ?? '—'}</span>
+      <span style={{ color: 'var(--pw-fg)' }}>{value ?? '-'}</span>
     </div>
   );
 }
 
 export function MyPicks() {
-  usePageTitle('My Picks — FantasyBrahma');
+  usePageTitle('My Picks - FantasyBrahma');
   const { isLoading: authLoading, isAuthenticated } = useRequireAuth('/my-picks');
 
   const { data: picks, isLoading } = useQuery<MyPick[]>({
@@ -162,7 +162,7 @@ export function MyPicks() {
                 </p>
                 <div className="flex items-baseline justify-between border-b py-1.5 text-xs" style={{ borderColor: 'var(--pw-border)' }}>
                   <span style={{ color: 'var(--pw-fg-muted)' }}>Formation</span>
-                  <span style={{ color: 'var(--pw-fg)' }}>{pick.formation ?? '—'}</span>
+                  <span style={{ color: 'var(--pw-fg)' }}>{pick.formation ?? '-'}</span>
                 </div>
                 <PlayerLine label="Captain" player={pick.captain} />
               </div>

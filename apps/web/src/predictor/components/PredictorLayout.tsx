@@ -107,7 +107,10 @@ export function PredictorLayout() {
         <hr className="pw-divider mt-12" />
 
         <footer className="py-6 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-          FantasyBrahma · Not affiliated with the Premier League or Fantasy Premier League.
+          <p>FantasyBrahma · Not affiliated with the Premier League or Fantasy Premier League.</p>
+          <p className="mt-1" style={{ color: 'var(--pw-accent)' }}>
+            Got feedback? feedback@gmail.com - we read everything.
+          </p>
         </footer>
       </div>
     </div>

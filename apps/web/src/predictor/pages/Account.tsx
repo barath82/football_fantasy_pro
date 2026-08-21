@@ -38,7 +38,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export function Account() {
-  usePageTitle('Account — FantasyBrahma');
+  usePageTitle('Account - FantasyBrahma');
   const { isLoading: authLoading, isAuthenticated, user, updateFplTeamId } = useRequireAuth('/account');
 
   const [editingFpl, setEditingFpl] = useState(false);
@@ -49,7 +49,7 @@ export function Account() {
   if (authLoading || !isAuthenticated || !user) return null;
 
   const identityLabel = user.provider === 'x' ? 'X handle' : 'Email';
-  const identityValue = user.provider === 'x' ? (user.handle ?? '—') : (user.email ?? '—');
+  const identityValue = user.provider === 'x' ? (user.handle ?? '-') : (user.email ?? '-');
 
   async function saveFplId() {
     if (!fplInput.trim()) return;
@@ -60,7 +60,7 @@ export function Account() {
       setEditingFpl(false);
       setFplInput('');
     } catch {
-      setError('Could not save — please try again.');
+      setError('Could not save - please try again.');
     } finally {
       setSaving(false);
     }
@@ -144,7 +144,7 @@ export function Account() {
             </p>
           )}
           <p className="mt-1.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-            Not connected to anything yet — this is just saved for when we can pull your real team automatically.
+            Not connected to anything yet - this is just saved for when we can pull your real team automatically.
           </p>
         </div>
       </div>

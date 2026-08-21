@@ -23,7 +23,7 @@ import { readDraft, saveDraft, clearDraft, type PickDraft } from '../lib/pickDra
 import type { PlayerRow } from '../../hooks/usePlayers';
 
 export function Challenges() {
-  usePageTitle('Weekly Challenges — FantasyBrahma');
+  usePageTitle('Weekly Challenges - FantasyBrahma');
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -78,7 +78,7 @@ export function Challenges() {
     const draft = readDraft();
     if (draft) {
       hydrateFromIds(draft)
-        .catch(() => setSubmitError('Could not restore your picks — please re-pick.'))
+        .catch(() => setSubmitError('Could not restore your picks - please re-pick.'))
         .finally(() => {
           clearDraft();
           setHydrated(true);
@@ -154,7 +154,7 @@ export function Challenges() {
     } catch (err: any) {
       // Surfaces the real message for the deadline-just-passed edge case
       // (local clock ticked to "open" a beat before the server's did).
-      setSubmitError(err.response?.data?.message ?? 'Could not submit — please try again.');
+      setSubmitError(err.response?.data?.message ?? 'Could not submit - please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -176,7 +176,7 @@ export function Challenges() {
       <h1 className="mt-2 text-3xl sm:text-4xl">Your picks</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         {deadlinePassed
-          ? 'The deadline has passed — picks are locked for this gameweek.'
+          ? 'The deadline has passed - picks are locked for this gameweek.'
           : isGameweekOne
             ? 'Six calls. About a minute. Edit anytime before the deadline.'
             : 'Eight calls. About a minute. Edit anytime before the deadline.'}
@@ -190,8 +190,8 @@ export function Challenges() {
           disabled={isGameweekOne || deadlinePassed}
           disabledNote={
             deadlinePassed
-              ? 'Picks are locked — the deadline has passed.'
-              : "Not applicable for Gameweek 1 — there's no prior squad yet to judge a transfer against."
+              ? 'Picks are locked - the deadline has passed.'
+              : "Not applicable for Gameweek 1 - there's no prior squad yet to judge a transfer against."
           }
         >
           <PlayerPicker
@@ -215,7 +215,7 @@ export function Challenges() {
           title="Differential Guru"
           description="Read the crowd."
           disabled={deadlinePassed}
-          disabledNote="Picks are locked — the deadline has passed."
+          disabledNote="Picks are locked - the deadline has passed."
         >
           <PlayerPicker
             label="Low-owned pick to succeed (<10%)"
@@ -240,7 +240,7 @@ export function Challenges() {
           title="Strategy Guru"
           description="Structure and armband."
           disabled={deadlinePassed}
-          disabledNote="Picks are locked — the deadline has passed."
+          disabledNote="Picks are locked - the deadline has passed."
         >
           <div>
             <p className="mb-1.5 text-xs font-medium" style={{ color: 'var(--pw-fg-muted)' }}>
@@ -260,9 +260,9 @@ export function Challenges() {
         <ChallengeBlock
           icon={ChipGuruIcon}
           title="Chip Guru"
-          description="Right chip, right week. Optional — tap again to clear."
+          description="Right chip, right week. Optional - tap again to clear."
           disabled={deadlinePassed}
-          disabledNote="Picks are locked — the deadline has passed."
+          disabledNote="Picks are locked - the deadline has passed."
         >
           <ChipPicker value={chipPick} onChange={setChipPick} disabled={deadlinePassed} />
         </ChallengeBlock>
@@ -272,7 +272,7 @@ export function Challenges() {
           title="CS Guru"
           description="Some walls hold. Some don't."
           disabled={deadlinePassed}
-          disabledNote="Picks are locked — the deadline has passed."
+          disabledNote="Picks are locked - the deadline has passed."
         >
           <TeamPicker
             label="Team to keep a clean sheet"

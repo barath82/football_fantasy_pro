@@ -5,15 +5,15 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { loginUrl, useAuth } from '../hooks/useAuth';
 
 const ERROR_MESSAGES: Record<string, string> = {
-  google_not_configured: "Google sign-in isn't set up yet — check back soon.",
-  x_not_configured: "X sign-in isn't set up yet — check back soon.",
+  google_not_configured: "Google sign-in isn't set up yet - check back soon.",
+  x_not_configured: "X sign-in isn't set up yet - check back soon.",
   state_mismatch: 'Something went wrong. Please try again.',
   google_failed: 'Google sign-in failed. Please try again.',
   x_failed: 'X sign-in failed. Please try again.',
 };
 
 export function Signup() {
-  usePageTitle('Sign up — FantasyBrahma');
+  usePageTitle('Sign up - FantasyBrahma');
   const navigate = useNavigate();
   const { register } = useAuth();
 

@@ -14,35 +14,35 @@ const GURU_LINES = [
   {
     icon: DifferentialGuruIcon,
     name: 'The Differential Guru',
-    rest: " carries Brahma's gift for seeing the overlooked — the player nobody owns, waiting to explode.",
+    rest: " carries Brahma's gift for seeing the overlooked - the player nobody owns, waiting to explode.",
   },
   {
     icon: ChipGuruIcon,
     name: 'The Chip Guru',
-    rest: ' holds the wisdom of timing — knowing that even the right decision, played on the wrong week, is wasted.',
+    rest: ' holds the wisdom of timing - knowing that even the right decision, played on the wrong week, is wasted.',
   },
   {
     icon: StrategyGuruIcon,
     name: 'The Strategy Guru',
-    rest: ' understands shape and structure — that a formation is a wager on where the points will fall.',
+    rest: ' understands shape and structure - that a formation is a wager on where the points will fall.',
   },
   {
     icon: TransferGuruIcon,
     name: 'The Transfer Guru',
-    rest: ' governs change itself — the eternal fantasy dilemma of who to release and who to bring in.',
+    rest: ' governs change itself - the eternal fantasy dilemma of who to release and who to bring in.',
   },
   {
     icon: CSGuruIcon,
     name: 'The CS Guru',
-    rest: ' reads risk where others see certainty — daring to back the unlikely wall and doubt the favorite.',
+    rest: ' reads risk where others see certainty - daring to back the unlikely wall and doubt the favorite.',
   },
 ];
 
 export function About() {
-  usePageTitle('The Myth of the Five Gurus — FantasyBrahma');
+  usePageTitle('The Myth of the Five Gurus - FantasyBrahma');
 
   return (
-    <div className="pt-[17.2px] pb-[25.6px] sm:pt-[25.81px] sm:pb-[38.4px]">
+    <div className="pt-[17.2px] pb-[5.12px] sm:pt-[25.81px] sm:pb-[7.68px]">
       <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
       <p className="pw-eyebrow mt-6">About the game</p>
 
@@ -52,7 +52,7 @@ export function About() {
 
       <div className="mt-10 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
         <p>
-          Fantasy football is its own small chaos. Fifteen players, a hundred permutations, one deadline every week —
+          Fantasy football is its own small chaos. Fifteen players, a hundred permutations, one deadline every week -
           and everyone, from a first-season manager to a fifteen-year veteran, is really asking the same handful of
           questions: Do I trust my gut on this pick? Should I gamble on a differential nobody owns? Is the safe,
           boring choice actually the smart one? Which shape puts points on my bench and which one loads my starting
@@ -60,13 +60,13 @@ export function About() {
         </p>
 
         <p>
-          Every Hindu tradition holds Brahma as the Creator — the source of the four Vedas, seen through his four
+          Every Hindu tradition holds Brahma as the Creator - the source of the four Vedas, seen through his four
           ever-watching faces turned to the four directions of the universe. Where Vishnu preserves and Shiva
           transforms, Brahma's domain is origination: the first spark of knowledge, order pulled from chaos.
         </p>
 
         <p>
-          Brahma looked upon this chaos and did what he has always done — he created order through knowledge. But
+          Brahma looked upon this chaos and did what he has always done - he created order through knowledge. But
           even a four-faced Creator cannot watch every match, every fixture, every gameweek deadline alone. So he
           formed five Gurus, each entrusted with a single fragment of his omniscience, and sent them into the world
           of fantasy football to answer one question, every single week, in full public view.
@@ -91,16 +91,16 @@ export function About() {
         <p>
           None of the five Gurus claims wisdom by title alone. Each one makes a public call, every gameweek, and is
           scored openly against the result. That is the one rule Brahma set down: knowledge must be proven, not
-          merely proclaimed. FantasyBrahma exists to carry out that rule — a live, transparent scoreboard of fantasy
+          merely proclaimed. FantasyBrahma exists to carry out that rule - a live, transparent scoreboard of fantasy
           football judgment, gameweek after gameweek, so you can see for yourself which instincts hold up and which
           ones don't.
         </p>
 
         <p>
           At its root, this isn't a mythology site or a novelty game. It's a mirror. Every Guru challenge maps to a
-          decision you are already making in your own team — trust your gut, chase the differential, stick with the
+          decision you are already making in your own team - trust your gut, chase the differential, stick with the
           boring pick, pick your shape, time your chip. FantasyBrahma turns those private guesses into public,
-          trackable, provable results — a running, gameweek-by-gameweek answer to the question every fantasy manager
+          trackable, provable results - a running, gameweek-by-gameweek answer to the question every fantasy manager
           silently asks: was I right, or did I just think I was?
         </p>
         <Link
@@ -115,6 +115,23 @@ export function About() {
       <p className="mt-[32px] text-center text-2xl font-medium leading-snug tracking-tight sm:text-3xl">
         Five Gurus. One Creator. Infinite gameweeks.
       </p>
+
+      <h2 className="pw-display mt-14 text-lg">Help us build this right.</h2>
+      <div className="mt-3 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
+        <p>
+          FantasyBrahma is early - five Gurus, ten challenges, and a lot of decisions still being tested in public.
+          If a scoring call feels off, a Guru's challenge doesn't make sense, or you've got an idea for a sixth Guru
+          we haven't thought of, we want to hear it. This site is being shaped by actual FPL managers, not built in
+          a vacuum - so tell us what's working, what's confusing, and what you'd change.
+        </p>
+        <p>
+          Write to us at{' '}
+          <a href="mailto:feedback@gmail.com" className="pw-focus" style={{ color: 'var(--pw-accent)' }}>
+            feedback@gmail.com
+          </a>
+          . Every email gets read; we can't promise every idea makes it in, but we promise none get ignored.
+        </p>
+      </div>
     </div>
   );
 }

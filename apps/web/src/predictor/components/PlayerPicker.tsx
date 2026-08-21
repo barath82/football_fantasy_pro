@@ -65,7 +65,7 @@ export function PlayerPicker({
             {value.webName} <span style={{ color: 'var(--pw-fg-muted)' }}>· {value.team.shortName}</span>
           </span>
           <span style={{ color: 'var(--pw-fg-muted)' }}>
-            {value.selectedByPercent != null ? `${value.selectedByPercent}%` : '—'}
+            {value.selectedByPercent != null ? `${value.selectedByPercent}%` : '-'}
           </span>
         </button>
       ) : (
@@ -114,7 +114,7 @@ export function PlayerPicker({
                   {p.webName} <span style={{ color: 'var(--pw-fg-muted)' }}>· {p.team.shortName}</span>
                 </span>
                 <span style={{ color: 'var(--pw-fg-muted)' }}>
-                  {p.selectedByPercent != null ? `${p.selectedByPercent}%` : '—'}
+                  {p.selectedByPercent != null ? `${p.selectedByPercent}%` : '-'}
                 </span>
               </button>
             </li>

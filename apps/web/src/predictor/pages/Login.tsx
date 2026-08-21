@@ -5,7 +5,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { loginUrl, useAuth } from '../hooks/useAuth';
 
 export function Login() {
-  usePageTitle('Log in — FantasyBrahma');
+  usePageTitle('Log in - FantasyBrahma');
   const navigate = useNavigate();
   const { login } = useAuth();
 
