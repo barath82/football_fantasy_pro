@@ -67,7 +67,7 @@ export function Account() {
   }
 
   return (
-    <div className="py-10 sm:py-16">
+    <div className="pt-[22.4px] pb-10 sm:pt-[35.84px] sm:pb-16">
       <h1 className="mt-2 text-3xl sm:text-4xl">Account</h1>
 
       <div className="mt-6 flex items-center gap-3.5">

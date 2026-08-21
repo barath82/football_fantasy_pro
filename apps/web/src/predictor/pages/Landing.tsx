@@ -23,15 +23,16 @@ export function Landing() {
   usePageTitle('FantasyBrahma — Five Gurus. One Creator. Infinite gameweeks.');
 
   return (
-    <div className="py-16 sm:py-24">
+    <div className="pt-[17.2px] pb-16 sm:pt-[25.81px] sm:pb-24">
       <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
       <div className="mt-6">
         <GameweekBadge suffix="open now" />
       </div>
 
       <h1 className="mt-[17.6px] text-4xl leading-[1.05] sm:text-6xl">
-        Brahma sees every <span style={{ color: 'var(--pw-accent)' }}>gameweek</span> in his infinite{' '}
-        <span style={{ color: 'var(--pw-accent)' }}>wisdom</span>. Now you can too!
+        <span className="text-[18.9px] xl:whitespace-nowrap xl:text-[21px]">Same content. Same picks. Same boring mini-league.</span>
+        <br></br>
+        <span style={{ color: 'var(--pw-accent)' }}>Time to break the herd.</span> {' '}
       </h1>
 
       <div className="mt-10 flex flex-col gap-6 text-[15px] leading-relaxed" style={{ color: 'var(--pw-fg-muted)' }}>
@@ -82,7 +83,7 @@ export function Landing() {
         </Link>
       </div>
 
-      <h2 className="pw-display mt-[104px] text-xl">Meet the Gurus</h2>
+      <h2 className="pw-display mt-[52px] text-xl">Meet the Gurus</h2>
 
       <div className="mt-8 grid gap-5 sm:grid-cols-6">
         {GURUS.map((g, i) => (

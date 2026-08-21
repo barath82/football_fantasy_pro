@@ -32,7 +32,7 @@ export function Login() {
   }
 
   return (
-    <div className="mx-auto max-w-md py-16 sm:py-24">
+    <div className="mx-auto max-w-md pt-[35.84px] pb-16 sm:pt-[53.76px] sm:pb-24">
       <div className="flex flex-col items-center text-center">
         <BrahmaIcon size={34} style={{ color: 'var(--pw-accent)' }} />
         <h1 className="mt-4 text-3xl">Welcome back</h1>

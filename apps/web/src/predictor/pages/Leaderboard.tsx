@@ -27,7 +27,7 @@ export function Leaderboard() {
   const rows = getLeaderboard(tab);
 
   return (
-    <div className="py-10 sm:py-16">
+    <div className="pt-[15.23px] pb-10 sm:pt-[24.37px] sm:pb-16">
       <GameweekBadge showCountdown={false} />
       <h1 className="mt-2 text-3xl sm:text-4xl">Leaderboard</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>

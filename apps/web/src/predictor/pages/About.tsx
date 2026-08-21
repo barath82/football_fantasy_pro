@@ -40,7 +40,7 @@ export function About() {
   usePageTitle('The Myth of the Five Gurus — FantasyBrahma');
 
   return (
-    <div className="py-16 sm:py-24">
+    <div className="pt-[17.2px] pb-16 sm:pt-[25.81px] sm:pb-24">
       <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
       <p className="pw-eyebrow mt-6">About the game</p>
 

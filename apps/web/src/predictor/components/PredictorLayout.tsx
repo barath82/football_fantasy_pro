@@ -28,7 +28,7 @@ export function PredictorLayout() {
   return (
     <div className="pw flex min-h-screen flex-col" data-theme={theme}>
       <header className="pw-header">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-5 py-3.5 xl:max-w-[998px]">
           <NavLink
             to="/"
             className="pw-display pw-focus flex items-center gap-2 text-base"
@@ -98,7 +98,7 @@ export function PredictorLayout() {
         )}
       </header>
 
-      <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5">
+      <div className="mx-auto flex w-full max-w-2xl flex-1 flex-col px-5 xl:max-w-[874px]">
         <main className="flex-1">
           <Outlet />
         </main>

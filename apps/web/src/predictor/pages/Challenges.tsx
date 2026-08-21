@@ -171,7 +171,7 @@ export function Challenges() {
           : 'Submit picks';
 
   return (
-    <div className="pt-10 pb-32 sm:pt-16">
+    <div className="pt-[15.23px] pb-32 sm:pt-[24.37px]">
       <GameweekBadge />
       <h1 className="mt-2 text-3xl sm:text-4xl">Your picks</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>

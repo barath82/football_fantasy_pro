@@ -88,7 +88,7 @@ export function MyPicks() {
   if (authLoading || !isAuthenticated) return null;
 
   return (
-    <div className="py-10 sm:py-16">
+    <div className="pt-[22.4px] pb-10 sm:pt-[35.84px] sm:pb-16">
       <h1 className="mt-2 text-3xl sm:text-4xl">My picks</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Every gameweek you've made a call. Tap one to see the full picks.
