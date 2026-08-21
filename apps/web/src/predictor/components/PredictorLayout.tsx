@@ -10,6 +10,7 @@ import { AccountAvatarMenu, AccountMobileLinks } from './AccountMenu';
 const NAV_LINKS = [
   { to: '/challenges', label: 'Challenges' },
   { to: '/leaderboard', label: 'Leaderboard' },
+  { to: '/scoring', label: 'Scoring' },
   { to: '/about', label: 'About' },
 ];
 
@@ -105,7 +106,7 @@ export function PredictorLayout() {
 
         <hr className="pw-divider mt-12" />
 
-        <footer className="py-6 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+        <footer className="py-6 text-center text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
           FantasyBrahma · Not affiliated with the Premier League or Fantasy Premier League.
         </footer>
       </div>

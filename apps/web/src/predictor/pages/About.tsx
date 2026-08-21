@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import {
   BrahmaIcon,
   CSGuruIcon,
@@ -40,7 +42,7 @@ export function About() {
   usePageTitle('The Myth of the Five Gurus — FantasyBrahma');
 
   return (
-    <div className="pt-[17.2px] pb-16 sm:pt-[25.81px] sm:pb-24">
+    <div className="pt-[17.2px] pb-[25.6px] sm:pt-[25.81px] sm:pb-[38.4px]">
       <BrahmaIcon size={40} style={{ color: 'var(--pw-accent)' }} />
       <p className="pw-eyebrow mt-6">About the game</p>
 
@@ -101,9 +103,16 @@ export function About() {
           trackable, provable results — a running, gameweek-by-gameweek answer to the question every fantasy manager
           silently asks: was I right, or did I just think I was?
         </p>
+        <Link
+          to="/scoring"
+          className="pw-focus pw-cta-secondary inline-flex w-fit items-center gap-2 text-sm"
+          style={{ color: 'var(--pw-fg-muted)' }}
+        >
+          See how it's scored <ArrowRight size={14} />
+        </Link>
       </div>
 
-      <p className="mt-16 text-center text-2xl font-medium italic leading-snug tracking-tight sm:text-3xl">
+      <p className="mt-[32px] text-center text-2xl font-medium leading-snug tracking-tight sm:text-3xl">
         Five Gurus. One Creator. Infinite gameweeks.
       </p>
     </div>
