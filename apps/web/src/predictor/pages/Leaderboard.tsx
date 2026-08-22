@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
-import { GameweekBadge } from '../components/GameweekBadge';
+import { useGameweeks, usePreviousCompletedGameweek } from '../../hooks/useGameweeks';
+import { GameweekSwitcher } from '../components/GameweekSwitcher';
 import { SegmentedTabs } from '../components/SegmentedTabs';
 import { ExpandableRow } from '../components/ExpandableRow';
 import { DifferentialGuruIcon, OracleIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
@@ -27,6 +28,19 @@ export function Leaderboard() {
   const [tab, setTab] = useState<LeaderboardKey>('oracle');
   const rows = getLeaderboard(tab);
 
+  const { previousCompleted } = usePreviousCompletedGameweek();
+  const { data: gameweeks } = useGameweeks();
+  const [selectedGwFplId, setSelectedGwFplId] = useState<number | null>(null);
+
+  // Defaults to the last completed gameweek, not the one still open for
+  // picks — standings only mean something once a week's actually been
+  // played. Standings themselves don't vary by gameweek yet — no scoring
+  // logic exists for any Guru — this just gets the navigation in place
+  // ahead of that.
+  useEffect(() => {
+    if (selectedGwFplId == null && previousCompleted) setSelectedGwFplId(previousCompleted.fplId);
+  }, [previousCompleted, selectedGwFplId]);
+
   // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once for the default tab shown on load, same event the tab-switch handler below fires
   useEffect(() => {
     trackEvent({ name: 'leaderboard_tab_viewed', props: { tab: 'oracle' } });
@@ -34,7 +48,9 @@ export function Leaderboard() {
 
   return (
     <div className="pt-[15.23px] pb-10 sm:pt-[24.37px] sm:pb-16">
-      <GameweekBadge showCountdown={false} />
+      {selectedGwFplId != null && (
+        <GameweekSwitcher gameweeks={gameweeks} selectedFplId={selectedGwFplId} onChange={setSelectedGwFplId} />
+      )}
       <h1 className="mt-2 text-3xl sm:text-4xl">Leaderboard</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Who's actually good at this. Tap a row to look deeper.

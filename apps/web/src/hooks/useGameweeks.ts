@@ -65,17 +65,52 @@ export function useGameweeks() {
  * showing a finished gameweek as live would be actively misleading. Falls
  * back to the next unfinished gameweek, then to null — callers should render
  * a "gameweek 1 / preseason" placeholder in that case.
+ *
+ * Also doesn't blindly trust is_current/is_next once that gameweek's own
+ * deadline has actually passed — the sync only flips those flags when it
+ * re-runs, so between syncs (or right after a deadline) they can point at a
+ * gameweek that's already closed. When that happens this steps forward to
+ * the next gameweek whose deadline is still ahead, so the app shows the
+ * gameweek that's actually open right now rather than a stale one.
  */
 export function useCurrentGameweek() {
   const query = useGameweeks();
   const gameweeks = Array.isArray(query.data) ? query.data : undefined;
+  const sorted = gameweeks ? [...gameweeks].sort((a, b) => a.fplId - b.fplId) : undefined;
+
+  const isOpen = (gw: GwSummary) => !gw.finished && new Date(gw.deadlineTime).getTime() > Date.now();
+
+  const flagged =
+    sorted?.find((gw) => gw.isCurrent && !gw.finished) ?? sorted?.find((gw) => gw.isNext) ?? null;
 
   const current =
-    gameweeks?.find((gw) => gw.isCurrent && !gw.finished) ??
-    gameweeks?.find((gw) => gw.isNext) ??
-    null;
+    (flagged && isOpen(flagged) ? flagged : sorted?.find(isOpen)) ?? flagged ?? null;
 
   return { ...query, current };
+}
+
+/**
+ * The last gameweek with real results in — what the Leaderboard should
+ * default to, since standings only mean something for a week that's
+ * actually been played, not the one still open for picks. Prefers a
+ * gameweek explicitly marked `finished`; if the sync hasn't flagged one yet
+ * (e.g. right after a deadline, before results are marked in), falls back to
+ * the gameweek just before the current open one, since its deadline has
+ * already passed either way. Falls back to the current gameweek itself if
+ * there's nothing earlier (e.g. still Gameweek 1).
+ */
+export function usePreviousCompletedGameweek() {
+  const query = useGameweeks();
+  const { current } = useCurrentGameweek();
+  const gameweeks = Array.isArray(query.data) ? query.data : undefined;
+  const sorted = gameweeks ? [...gameweeks].sort((a, b) => a.fplId - b.fplId) : undefined;
+
+  const lastFinished = sorted ? [...sorted].reverse().find((gw) => gw.finished) : undefined;
+  const beforeCurrent = current && sorted ? sorted.find((gw) => gw.fplId === current.fplId - 1) : undefined;
+
+  const previousCompleted = lastFinished ?? beforeCurrent ?? current ?? null;
+
+  return { ...query, previousCompleted };
 }
 
 export function useGameweekDetail(gwFplId: number | null) {

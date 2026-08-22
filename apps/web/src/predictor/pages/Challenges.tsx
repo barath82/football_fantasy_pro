@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import { useCurrentGameweek } from '../../hooks/useGameweeks';
+import { useCurrentGameweek, useGameweeks } from '../../hooks/useGameweeks';
 import { useDeadline } from '../hooks/useDeadline';
-import { GameweekBadge } from '../components/GameweekBadge';
+import { GameweekSwitcher } from '../components/GameweekSwitcher';
 import { ChallengeBlock } from '../components/ChallengeBlock';
 import { PlayerPicker } from '../components/PlayerPicker';
 import { FormationPicker } from '../components/FormationPicker';
@@ -30,12 +30,25 @@ export function Challenges() {
   const queryClient = useQueryClient();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { current } = useCurrentGameweek();
-  const gameweekFplId = current?.fplId ?? 1;
+  const { data: gameweeks } = useGameweeks();
+
+  // The gameweek being viewed/edited — defaults to the live current one, but
+  // the switcher below lets you step to a locked past week (read-only) or
+  // ahead to a future one (the backend already accepts picks for any
+  // gameweek whose own deadline hasn't passed, not just "the" current one).
+  const [selectedGwFplId, setSelectedGwFplId] = useState<number | null>(null);
+  const [initialHydrationDone, setInitialHydrationDone] = useState(false);
+  // Set when a login-redirect draft just populated the form directly, so the
+  // gameweek-change effect below doesn't immediately re-fetch and clobber it.
+  const skipNextGwFetch = useRef(false);
+
+  const gameweekFplId = selectedGwFplId ?? current?.fplId ?? 1;
   // Transfer Guru needs a prior gameweek's squad to judge the swing against —
   // there isn't one yet in Gameweek 1, so it's shown but disabled.
   const isGameweekOne = gameweekFplId === 1;
+  const selectedGw = gameweeks?.find((gw) => gw.fplId === gameweekFplId);
   // Live-ticking — flips the instant the deadline passes, no refresh needed.
-  const { expired: deadlinePassed } = useDeadline(current?.deadlineTime ?? null);
+  const { expired: deadlinePassed } = useDeadline(selectedGw?.deadlineTime ?? null);
 
   const [transferIn, setTransferIn] = useState<PlayerRow | null>(null);
   const [transferOut, setTransferOut] = useState<PlayerRow | null>(null);
@@ -50,31 +63,30 @@ export function Challenges() {
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(false);
 
-  // Restore a pending draft (just came back from login) or an already-
-  // submitted pick for this gameweek, so picks survive a refresh/login round trip.
+  async function hydrateFromIds(ids: Omit<PickDraft, 'gameweekFplId'>) {
+    const [inRes, outRes, succeedRes, blankRes, captainRes] = await Promise.all([
+      ids.transferInPlayerId ? api.get(`/players/${ids.transferInPlayerId}`) : Promise.resolve(null),
+      ids.transferOutPlayerId ? api.get(`/players/${ids.transferOutPlayerId}`) : Promise.resolve(null),
+      api.get(`/players/${ids.differentialSucceedPlayerId}`),
+      api.get(`/players/${ids.differentialBlankPlayerId}`),
+      api.get(`/players/${ids.captainPlayerId}`),
+    ]);
+    setTransferIn(inRes?.data.player ?? null);
+    setTransferOut(outRes?.data.player ?? null);
+    setDifferentialSucceed(succeedRes.data.player);
+    setDifferentialBlank(blankRes.data.player);
+    setCaptain(captainRes.data.player);
+    setFormation(ids.formation);
+    setChipPick(ids.chipPick ?? null);
+    setCsSucceedTeamId(ids.csSucceedTeamId ?? null);
+    setCsFailTeamId(ids.csFailTeamId ?? null);
+  }
+
+  // Runs once: restores a pending draft (just came back from login), or —
+  // once the live current gameweek resolves — just points the switcher at it.
   useEffect(() => {
-    if (authLoading || hydrated) return;
-
-    const hydrateFromIds = async (ids: Omit<PickDraft, 'gameweekFplId'>) => {
-      const [inRes, outRes, succeedRes, blankRes, captainRes] = await Promise.all([
-        ids.transferInPlayerId ? api.get(`/players/${ids.transferInPlayerId}`) : Promise.resolve(null),
-        ids.transferOutPlayerId ? api.get(`/players/${ids.transferOutPlayerId}`) : Promise.resolve(null),
-        api.get(`/players/${ids.differentialSucceedPlayerId}`),
-        api.get(`/players/${ids.differentialBlankPlayerId}`),
-        api.get(`/players/${ids.captainPlayerId}`),
-      ]);
-      setTransferIn(inRes?.data.player ?? null);
-      setTransferOut(outRes?.data.player ?? null);
-      setDifferentialSucceed(succeedRes.data.player);
-      setDifferentialBlank(blankRes.data.player);
-      setCaptain(captainRes.data.player);
-      setFormation(ids.formation);
-      setChipPick(ids.chipPick ?? null);
-      setCsSucceedTeamId(ids.csSucceedTeamId ?? null);
-      setCsFailTeamId(ids.csFailTeamId ?? null);
-    };
+    if (authLoading || initialHydrationDone) return;
 
     const draft = readDraft();
     if (draft) {
@@ -82,27 +94,52 @@ export function Challenges() {
         .catch(() => setSubmitError('Could not restore your picks - please re-pick.'))
         .finally(() => {
           clearDraft();
-          setHydrated(true);
+          skipNextGwFetch.current = true;
+          setSelectedGwFplId(draft.gameweekFplId);
+          setInitialHydrationDone(true);
         });
       return;
     }
 
-    if (isAuthenticated) {
-      api
-        .get('/picks/me', { params: { gameweek: gameweekFplId } })
-        .then(({ data: pick }) => {
-          if (!pick) return;
-          return hydrateFromIds(pick).then(() => setSubmitted(true));
-        })
-        .catch(() => {})
-        .finally(() => setHydrated(true));
+    if (!current) return; // wait for the live gameweek before defaulting to it
+    setSelectedGwFplId(current.fplId);
+    setInitialHydrationDone(true);
+  }, [authLoading, current, initialHydrationDone]);
+
+  // Runs on every gameweek change after the initial load (i.e. prev/next) —
+  // resets the form, then loads whatever pick already exists for that week.
+  useEffect(() => {
+    if (!initialHydrationDone || selectedGwFplId == null) return;
+    if (skipNextGwFetch.current) {
+      skipNextGwFetch.current = false;
       return;
     }
 
-    setHydrated(true);
-  }, [authLoading, isAuthenticated, gameweekFplId, hydrated]);
+    setTransferIn(null);
+    setTransferOut(null);
+    setDifferentialSucceed(null);
+    setDifferentialBlank(null);
+    setFormation('4-3-3');
+    setCaptain(null);
+    setChipPick(null);
+    setCsSucceedTeamId(null);
+    setCsFailTeamId(null);
+    setSubmitted(false);
+    setSubmitError(null);
 
-  // Chip Guru is optional — not everyone has a chip worth playing every week —
+    if (!isAuthenticated) return;
+
+    api
+      .get('/picks/me', { params: { gameweek: selectedGwFplId } })
+      .then(({ data: pick }) => {
+        if (!pick) return;
+        return hydrateFromIds(pick).then(() => setSubmitted(true));
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- hydrateFromIds closes over setters only, stable across renders
+  }, [selectedGwFplId, initialHydrationDone, isAuthenticated]);
+
+  // Chip Guru is optional - not everyone has a chip worth playing every week -
   // so it's deliberately left out of the required-picks count/gating below.
   const requiredCount = isGameweekOne ? 6 : 8;
   const picksMade = [
@@ -136,7 +173,7 @@ export function Challenges() {
     };
 
     if (!isAuthenticated) {
-      // Picks are allowed without an account — only submitting requires one.
+      // Picks are allowed without an account - only submitting requires one.
       // Draft survives the round trip through login and comes back here.
       saveDraft(draft);
       navigate('/signup?returnTo=/challenges');
@@ -149,7 +186,7 @@ export function Challenges() {
     try {
       await api.post('/picks', draft);
       setSubmitted(true);
-      // My Picks reads /picks/mine via React Query — without this it keeps
+      // My Picks reads /picks/mine via React Query - without this it keeps
       // showing whatever was cached from before this submit (up to 5 min
       // stale), not the pick that was just made.
       await queryClient.invalidateQueries({ queryKey: ['picks', 'mine'] });
@@ -186,7 +223,7 @@ export function Challenges() {
 
   return (
     <div className="pt-[15.23px] pb-32 sm:pt-[24.37px]">
-      <GameweekBadge />
+      <GameweekSwitcher gameweeks={gameweeks} selectedFplId={gameweekFplId} onChange={setSelectedGwFplId} />
       <h1 className="mt-2 text-3xl sm:text-4xl">Your picks</h1>
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         {deadlinePassed

@@ -94,7 +94,7 @@ export function MyPicks() {
         Every gameweek you've made a call. Tap one to see the full picks.
       </p>
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-col gap-4">
         {isLoading && (
           <p className="py-4 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
             Loading…

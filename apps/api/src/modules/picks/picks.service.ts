@@ -43,7 +43,7 @@ export class PicksService {
     return this.pickRepo.findOneBy({ userId, gameweekId: gameweek.id });
   }
 
-  /** Every pick the user has ever submitted, most recent gameweek first — for the "My Picks" page. */
+  /** Every pick the user has ever submitted, Gameweek 1 first — for the "My Picks" page. */
   async findAllMine(userId: string) {
     const picks = await this.pickRepo.find({
       where: { userId },
@@ -64,7 +64,8 @@ export class PicksService {
       t ? { name: t.name, shortName: t.shortName } : null;
 
     return picks
-      .sort((a, b) => b.gameweek.fplId - a.gameweek.fplId)
+      // Gameweek 1 first, appending downward as the season progresses.
+      .sort((a, b) => a.gameweek.fplId - b.gameweek.fplId)
       .map((p) => ({
         gameweekFplId: p.gameweek.fplId,
         gameweekName: p.gameweek.name,
