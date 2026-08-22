@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation, useSearchParams } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useTheme } from '../theme/ThemeProvider';
 import { ThemeToggle } from '../theme/ThemeToggle';
 import { BrahmaIcon } from './guru-icons';
 import { useAuth } from '../hooks/useAuth';
 import { AccountAvatarMenu, AccountMobileLinks } from './AccountMenu';
+import { identifyUser, trackEvent, trackPageview } from '../../lib/analytics';
 
 const NAV_LINKS = [
   { to: '/challenges', label: 'Challenges' },
@@ -23,8 +24,40 @@ function navLinkStyle(isActive: boolean) {
 
 export function PredictorLayout() {
   const { theme } = useTheme();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+
+  // Records every page under this layout — Landing, Challenges, Leaderboard,
+  // Scoring, About, My Picks, Account, Signup, Login, and the password-reset
+  // pages all render through this single Outlet, so one listener here covers
+  // all of them. Fires on the initial load too, not just later navigations.
+  useEffect(() => {
+    trackPageview(location.pathname);
+  }, [location.pathname]);
+
+  // Fires the signup/login analytics event exactly once after an OAuth
+  // redirect completes (?authed=new|login&authProvider=...), then strips the
+  // params so a refresh doesn't re-fire it. Can't detect this from
+  // isAuthenticated alone — that's also true on a normal page load with an
+  // existing session.
+  useEffect(() => {
+    const authed = searchParams.get('authed');
+    const authProvider = searchParams.get('authProvider');
+    if (!authed || !authProvider || !user) return;
+
+    identifyUser({ id: user.id, provider: user.provider });
+    trackEvent({
+      name: authed === 'new' ? 'signup_completed' : 'login_completed',
+      props: { provider: authProvider as 'google' | 'x' },
+    });
+
+    const next = new URLSearchParams(searchParams);
+    next.delete('authed');
+    next.delete('authProvider');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, user, setSearchParams]);
 
   return (
     <div className="pw flex min-h-screen flex-col" data-theme={theme}>

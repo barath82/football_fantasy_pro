@@ -223,8 +223,9 @@ export class AuthService {
 
   // ─── User + session ───────────────────────────────────────────────────────
 
-  async findOrCreateUser(provider: AuthProvider, profile: OAuthProfile): Promise<User> {
+  async findOrCreateUser(provider: AuthProvider, profile: OAuthProfile): Promise<{ user: User; isNew: boolean }> {
     let user = await this.userRepo.findOneBy({ provider, providerId: profile.providerId });
+    let isNew = false;
     if (!user) {
       user = this.userRepo.create({
         provider,
@@ -236,8 +237,9 @@ export class AuthService {
       });
       await this.userRepo.save(user);
       this.logger.log(`New user via ${provider}: ${profile.displayName}`);
+      isNew = true;
     }
-    return user;
+    return { user, isNew };
   }
 
   issueToken(user: User): string {

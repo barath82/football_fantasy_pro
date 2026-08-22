@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
+import { identifyUser, resetAnalyticsIdentity, trackEvent } from '../../lib/analytics';
 
 export interface AuthUser {
   id: string;
@@ -38,6 +39,8 @@ export function useAuth() {
   const logout = async () => {
     await api.post('/auth/logout');
     queryClient.setQueryData(['auth', 'me'], { authenticated: false });
+    trackEvent({ name: 'logout' });
+    resetAnalyticsIdentity();
   };
 
   const updateFplTeamId = async (fplTeamId: string) => {
@@ -50,13 +53,17 @@ export function useAuth() {
   const refreshSession = () => queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
 
   const register = async (email: string, password: string, displayName: string) => {
-    await api.post('/auth/register', { email, password, displayName });
+    const { data: user } = await api.post('/auth/register', { email, password, displayName });
     await refreshSession();
+    identifyUser({ id: user.id, provider: 'email' });
+    trackEvent({ name: 'signup_completed', props: { provider: 'email' } });
   };
 
   const login = async (email: string, password: string) => {
-    await api.post('/auth/login', { email, password });
+    const { data: user } = await api.post('/auth/login', { email, password });
     await refreshSession();
+    identifyUser({ id: user.id, provider: 'email' });
+    trackEvent({ name: 'login_completed', props: { provider: 'email' } });
   };
 
   const forgotPassword = async (email: string) => {

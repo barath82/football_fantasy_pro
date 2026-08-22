@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowDown, ArrowUp, Minus } from 'lucide-react';
 import { GameweekBadge } from '../components/GameweekBadge';
 import { SegmentedTabs } from '../components/SegmentedTabs';
@@ -6,6 +6,7 @@ import { ExpandableRow } from '../components/ExpandableRow';
 import { DifferentialGuruIcon, OracleIcon, StrategyGuruIcon, TransferGuruIcon } from '../components/guru-icons';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { getLeaderboard, type LeaderboardKey } from '../mock/experts';
+import { trackEvent } from '../../lib/analytics';
 
 const TABS: { key: LeaderboardKey; label: string; icon: typeof OracleIcon }[] = [
   { key: 'oracle', label: 'The Brahma', icon: OracleIcon },
@@ -26,6 +27,11 @@ export function Leaderboard() {
   const [tab, setTab] = useState<LeaderboardKey>('oracle');
   const rows = getLeaderboard(tab);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- fire once for the default tab shown on load, same event the tab-switch handler below fires
+  useEffect(() => {
+    trackEvent({ name: 'leaderboard_tab_viewed', props: { tab: 'oracle' } });
+  }, []);
+
   return (
     <div className="pt-[15.23px] pb-10 sm:pt-[24.37px] sm:pb-16">
       <GameweekBadge showCountdown={false} />
@@ -35,7 +41,14 @@ export function Leaderboard() {
       </p>
 
       <div className="mt-5">
-        <SegmentedTabs tabs={TABS} active={tab} onChange={(key) => setTab(key as LeaderboardKey)} />
+        <SegmentedTabs
+          tabs={TABS}
+          active={tab}
+          onChange={(key) => {
+            setTab(key as LeaderboardKey);
+            trackEvent({ name: 'leaderboard_tab_viewed', props: { tab: key } });
+          }}
+        />
       </div>
 
       <div className="mt-4">

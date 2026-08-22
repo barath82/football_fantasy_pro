@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { unregisterStaleServiceWorker } from './unregisterServiceWorker';
+import { initAnalytics } from './lib/analytics';
 import './index.css';
 import '@mantine/core/styles.css';
 import './hub.css';
@@ -27,6 +28,7 @@ const theme = createTheme({
 });
 
 unregisterStaleServiceWorker();
+initAnalytics();
 
 const queryClient = new QueryClient({
   defaultOptions: {

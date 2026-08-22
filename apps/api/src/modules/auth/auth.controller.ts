@@ -18,6 +18,17 @@ class UpdateFplTeamIdDto {
   fplTeamId: string;
 }
 
+/**
+ * Marks an OAuth redirect as "just completed sign-in" for one-time analytics
+ * tracking on the frontend (signup_completed vs login_completed) — the
+ * frontend can't otherwise tell "just finished OAuth" apart from "already
+ * had a valid session on page load".
+ */
+function appendAuthedParams(returnTo: string, isNew: boolean, provider: 'google' | 'x'): string {
+  const separator = returnTo.includes('?') ? '&' : '?';
+  return `${returnTo}${separator}authed=${isNew ? 'new' : 'login'}&authProvider=${provider}`;
+}
+
 const SESSION_COOKIE = 'pw_session';
 const STATE_COOKIE = 'pw_oauth_state';
 const RETURN_TO_COOKIE = 'pw_oauth_return_to';
@@ -70,12 +81,12 @@ export class AuthController {
     }
     try {
       const profile = await this.auth.exchangeGoogleCode(code);
-      const user = await this.auth.findOrCreateUser('google', profile);
+      const { user, isNew } = await this.auth.findOrCreateUser('google', profile);
       const token = this.auth.issueToken(user);
       res.cookie(SESSION_COOKIE, token, this.cookieOpts(SESSION_MAX_AGE_MS));
       res.clearCookie(STATE_COOKIE);
       res.clearCookie(RETURN_TO_COOKIE);
-      return res.redirect(this.frontendUrl(returnTo));
+      return res.redirect(this.frontendUrl(appendAuthedParams(returnTo, isNew, 'google')));
     } catch (err: any) {
       return res.redirect(this.frontendUrl(`/signup?error=google_failed&returnTo=${encodeURIComponent(returnTo)}`));
     }
@@ -110,13 +121,13 @@ export class AuthController {
     }
     try {
       const profile = await this.auth.exchangeXCode(code, verifier);
-      const user = await this.auth.findOrCreateUser('x', profile);
+      const { user, isNew } = await this.auth.findOrCreateUser('x', profile);
       const token = this.auth.issueToken(user);
       res.cookie(SESSION_COOKIE, token, this.cookieOpts(SESSION_MAX_AGE_MS));
       res.clearCookie(STATE_COOKIE);
       res.clearCookie(PKCE_COOKIE);
       res.clearCookie(RETURN_TO_COOKIE);
-      return res.redirect(this.frontendUrl(returnTo));
+      return res.redirect(this.frontendUrl(appendAuthedParams(returnTo, isNew, 'x')));
     } catch (err: any) {
       return res.redirect(this.frontendUrl(`/signup?error=x_failed&returnTo=${encodeURIComponent(returnTo)}`));
     }

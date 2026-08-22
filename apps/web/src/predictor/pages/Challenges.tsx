@@ -21,6 +21,7 @@ import { usePageTitle } from '../hooks/usePageTitle';
 import { useAuth } from '../hooks/useAuth';
 import { readDraft, saveDraft, clearDraft, type PickDraft } from '../lib/pickDraft';
 import type { PlayerRow } from '../../hooks/usePlayers';
+import { trackEvent } from '../../lib/analytics';
 
 export function Challenges() {
   usePageTitle('Weekly Challenges - FantasyBrahma');
@@ -142,6 +143,7 @@ export function Challenges() {
       return;
     }
 
+    const isEdit = submitted;
     setSubmitting(true);
     setSubmitError(null);
     try {
@@ -151,10 +153,22 @@ export function Challenges() {
       // showing whatever was cached from before this submit (up to 5 min
       // stale), not the pick that was just made.
       await queryClient.invalidateQueries({ queryKey: ['picks', 'mine'] });
+      trackEvent({
+        name: 'picks_submitted',
+        props: {
+          gameweek: gameweekFplId,
+          is_edit: isEdit,
+          chip_picked: !!chipPick,
+          chip: chipPick ?? undefined,
+          formation,
+        },
+      });
     } catch (err: any) {
       // Surfaces the real message for the deadline-just-passed edge case
       // (local clock ticked to "open" a beat before the server's did).
-      setSubmitError(err.response?.data?.message ?? 'Could not submit - please try again.');
+      const message = err.response?.data?.message ?? 'Could not submit - please try again.';
+      setSubmitError(message);
+      trackEvent({ name: 'picks_submit_failed', props: { reason: message } });
     } finally {
       setSubmitting(false);
     }
