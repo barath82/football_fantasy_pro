@@ -24,6 +24,7 @@ export function Signup() {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fplTeamId, setFplTeamId] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -32,7 +33,7 @@ export function Signup() {
     setSubmitting(true);
     setFormError(null);
     try {
-      await register(email, password, displayName);
+      await register(email, password, displayName, fplTeamId.trim() || undefined);
       navigate(returnTo);
     } catch (err: any) {
       setFormError(err.response?.data?.message ?? 'Could not create your account. Please try again.');
@@ -106,6 +107,21 @@ export function Signup() {
           className="pw-focus rounded-lg px-3 py-2.5 text-sm"
           style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
         />
+        <div>
+          <input
+            type="text"
+            inputMode="numeric"
+            value={fplTeamId}
+            onChange={(e) => setFplTeamId(e.target.value)}
+            placeholder="FPL Team ID (optional)"
+            className="pw-focus w-full rounded-lg px-3 py-2.5 text-sm"
+            style={{ background: 'var(--pw-surface)', border: '1px solid var(--pw-border)', color: 'var(--pw-fg)' }}
+          />
+          <p className="mt-1.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+            Optional — unlocks your rank, mini-leagues and chip history on My Picks. Find it in the FPL app under
+            Points, it's the number in the page URL. You can add this later too.
+          </p>
+        </div>
         {formError && (
           <p className="text-xs" style={{ color: 'var(--pw-negative)' }}>
             {formError}

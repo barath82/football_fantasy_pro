@@ -24,6 +24,6 @@ import { SyncController } from './sync.controller';
   ],
   providers: [FplApiService, SyncService],
   controllers: [SyncController],
-  exports: [SyncService],
+  exports: [SyncService, FplApiService],
 })
 export class SyncModule {}

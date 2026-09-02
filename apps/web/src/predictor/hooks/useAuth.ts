@@ -52,8 +52,8 @@ export function useAuth() {
   /** Refetches /auth/me so the session cookie a register/login response just set actually takes effect app-wide. */
   const refreshSession = () => queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
 
-  const register = async (email: string, password: string, displayName: string) => {
-    const { data: user } = await api.post('/auth/register', { email, password, displayName });
+  const register = async (email: string, password: string, displayName: string, fplTeamId?: string) => {
+    const { data: user } = await api.post('/auth/register', { email, password, displayName, fplTeamId: fplTeamId || undefined });
     await refreshSession();
     identifyUser({ id: user.id, provider: 'email' });
     trackEvent({ name: 'signup_completed', props: { provider: 'email' } });

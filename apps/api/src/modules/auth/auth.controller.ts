@@ -141,7 +141,7 @@ export class AuthController {
   @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   async register(@Body() dto: RegisterDto, @Res() res: Response) {
-    const user = await this.auth.registerWithEmail(dto.email, dto.password, dto.displayName);
+    const user = await this.auth.registerWithEmail(dto.email, dto.password, dto.displayName, dto.fplTeamId);
     const token = this.auth.issueToken(user);
     res.cookie(SESSION_COOKIE, token, this.cookieOpts(SESSION_MAX_AGE_MS));
     return res.json({ id: user.id, displayName: user.displayName, email: user.email });

@@ -23,6 +23,12 @@ import { readDraft, saveDraft, clearDraft, type PickDraft } from '../lib/pickDra
 import type { PlayerRow } from '../../hooks/usePlayers';
 import { trackEvent } from '../../lib/analytics';
 
+// Transfer Guru is hidden from the UI for now, but nothing underneath it was
+// removed — the state, hydration, submit payload, and backend fields are all
+// still live. Flip this back to true to bring the block back with no other
+// changes needed.
+const TRANSFER_GURU_VISIBLE = false;
+
 export function Challenges() {
   usePageTitle('Weekly Challenges - FantasyBrahma');
 
@@ -141,10 +147,13 @@ export function Challenges() {
 
   // Chip Guru is optional - not everyone has a chip worth playing every week -
   // so it's deliberately left out of the required-picks count/gating below.
-  const requiredCount = isGameweekOne ? 6 : 8;
+  // Transfer Guru is hidden (see TRANSFER_GURU_VISIBLE) so it's excluded the
+  // same way GW1 already excludes it, regardless of gameweek.
+  const transferGuruActive = TRANSFER_GURU_VISIBLE && !isGameweekOne;
+  const requiredCount = transferGuruActive ? 8 : 6;
   const picksMade = [
-    isGameweekOne ? null : transferIn,
-    isGameweekOne ? null : transferOut,
+    transferGuruActive ? transferIn : null,
+    transferGuruActive ? transferOut : null,
     differentialSucceed,
     differentialBlank,
     formation,
@@ -155,7 +164,7 @@ export function Challenges() {
 
   async function handleSubmit() {
     if (deadlinePassed) return;
-    if (!isGameweekOne && (!transferIn || !transferOut)) return;
+    if (transferGuruActive && (!transferIn || !transferOut)) return;
     if (!differentialSucceed || !differentialBlank || !captain) return;
     if (!csSucceedTeamId || !csFailTeamId) return;
 
@@ -228,38 +237,40 @@ export function Challenges() {
       <p className="mt-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         {deadlinePassed
           ? 'The deadline has passed - picks are locked for this gameweek.'
-          : isGameweekOne
-            ? 'Six calls. About a minute. Edit anytime before the deadline.'
-            : 'Eight calls. About a minute. Edit anytime before the deadline.'}
+          : transferGuruActive
+            ? 'Eight calls. About a minute. Edit anytime before the deadline.'
+            : 'Six calls. About a minute. Edit anytime before the deadline.'}
       </p>
 
       <div className="mt-6">
-        <ChallengeBlock
-          icon={TransferGuruIcon}
-          title="Transfer Guru"
-          description="One in, one out. We track the net points."
-          disabled={isGameweekOne || deadlinePassed}
-          disabledNote={
-            deadlinePassed
-              ? 'Picks are locked - the deadline has passed.'
-              : "Not applicable for Gameweek 1 - there's no prior squad yet to judge a transfer against."
-          }
-        >
-          <PlayerPicker
-            label="Transfer in"
-            value={transferIn}
-            onChange={setTransferIn}
-            placeholder="Search for a player"
+        {TRANSFER_GURU_VISIBLE && (
+          <ChallengeBlock
+            icon={TransferGuruIcon}
+            title="Transfer Guru"
+            description="One in, one out. We track the net points."
             disabled={isGameweekOne || deadlinePassed}
-          />
-          <PlayerPicker
-            label="Transfer out"
-            value={transferOut}
-            onChange={setTransferOut}
-            placeholder="Search for a player"
-            disabled={isGameweekOne || deadlinePassed}
-          />
-        </ChallengeBlock>
+            disabledNote={
+              deadlinePassed
+                ? 'Picks are locked - the deadline has passed.'
+                : "Not applicable for Gameweek 1 - there's no prior squad yet to judge a transfer against."
+            }
+          >
+            <PlayerPicker
+              label="Transfer in"
+              value={transferIn}
+              onChange={setTransferIn}
+              placeholder="Search for a player"
+              disabled={isGameweekOne || deadlinePassed}
+            />
+            <PlayerPicker
+              label="Transfer out"
+              value={transferOut}
+              onChange={setTransferOut}
+              placeholder="Search for a player"
+              disabled={isGameweekOne || deadlinePassed}
+            />
+          </ChallengeBlock>
+        )}
 
         <ChallengeBlock
           icon={DifferentialGuruIcon}

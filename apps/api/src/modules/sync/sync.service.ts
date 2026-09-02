@@ -62,10 +62,21 @@ export class SyncService {
       const season = await this.upsertSeason();
       const positionMap = await this.upsertPositions(bootstrap.element_types);
       const teamMap = await this.upsertTeams(bootstrap.teams, season.id);
-      await this.upsertGameweeks(bootstrap.events, season.id);
+      const gameweekMap = await this.upsertGameweeks(bootstrap.events, season.id);
       await this.upsertPlayers(bootstrap.elements, season.id, teamMap, positionMap);
       await this.log('bootstrap-static', 'success', bootstrap.elements.length, Date.now() - started);
       this.logger.log(`Bootstrap: ${bootstrap.elements.length} players, ${bootstrap.teams.length} teams, ${bootstrap.events.length} GWs`);
+
+      // Fixtures are a single cheap API call — same cost class as the rest of
+      // bootstrap — so they belong here too, not only in the expensive full
+      // sync. Without this, fixtures stays empty for anyone who (correctly)
+      // avoids ?scope=full, and anything keyed on gameweek fixtures has
+      // nothing to work from.
+      const fplFixtures = await this.fplApi.getFixtures();
+      await this.upsertFixtures(fplFixtures, season.id, teamMap, gameweekMap);
+      await this.log('fixtures', 'success', fplFixtures.length, Date.now() - started);
+      this.logger.log(`Fixtures: ${fplFixtures.length} ingested`);
+
       this.logger.log(`=== Bootstrap sync complete in ${((Date.now() - started) / 1000).toFixed(1)}s ===`);
     } catch (err: any) {
       await this.log('bootstrap-static', 'error', 0, Date.now() - started, err.message);

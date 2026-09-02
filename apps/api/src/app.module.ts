@@ -28,6 +28,7 @@ import { GameweeksModule } from './modules/gameweeks/gameweeks.module';
 import { FixturesModule } from './modules/fixtures/fixtures.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { PicksModule } from './modules/picks/picks.module';
+import { FplProfileModule } from './modules/fpl-profile/fpl-profile.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { PicksModule } from './modules/picks/picks.module';
     FixturesModule,
     AuthModule,
     PicksModule,
+    FplProfileModule,
   ],
 })
 export class AppModule {}

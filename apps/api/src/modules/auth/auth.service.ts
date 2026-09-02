@@ -149,7 +149,7 @@ export class AuthService {
 
   // ─── Email/password ───────────────────────────────────────────────────────
 
-  async registerWithEmail(email: string, password: string, displayName: string): Promise<User> {
+  async registerWithEmail(email: string, password: string, displayName: string, fplTeamId?: string): Promise<User> {
     // Check across ALL providers, not just 'email' — someone who signed up via
     // Google/X with this same email shouldn't be able to create a second,
     // separate account with a password on top of it.
@@ -173,6 +173,7 @@ export class AuthService {
       avatarUrl: null,
       handle: null,
       passwordHash,
+      fplTeamId: fplTeamId?.trim() || null,
     });
     await this.userRepo.save(user);
     this.logger.log(`New user via email: ${displayName}`);
