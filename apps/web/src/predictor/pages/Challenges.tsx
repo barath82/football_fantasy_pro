@@ -22,15 +22,10 @@ import { useAuth } from '../hooks/useAuth';
 import { readDraft, saveDraft, clearDraft, type PickDraft } from '../lib/pickDraft';
 import type { PlayerRow } from '../../hooks/usePlayers';
 import { trackEvent } from '../../lib/analytics';
+import { TRANSFER_GURU_VISIBLE, CHIP_GURU_VISIBLE } from '../config/guruVisibility';
 
-// Transfer Guru and Chip Guru are hidden from the UI for now, but nothing
-// underneath either was removed — state, hydration, submit payload, and
-// backend fields are all still live. Flip these back to true to bring a
-// block back with no other changes needed. (Chip Guru was already optional
-// and excluded from the required-picks count, so hiding it needs no changes
-// there either.)
-const TRANSFER_GURU_VISIBLE = false;
-const CHIP_GURU_VISIBLE = false;
+// Chip Guru was already optional and excluded from the required-picks
+// count, so hiding it needs no changes to that logic either.
 
 export function Challenges() {
   usePageTitle('Weekly Challenges - FantasyBrahma');

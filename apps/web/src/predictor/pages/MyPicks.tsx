@@ -13,6 +13,7 @@ import {
 import { usePageTitle } from '../hooks/usePageTitle';
 import { useRequireAuth } from '../hooks/useRequireAuth';
 import { useDeadline } from '../hooks/useDeadline';
+import { TRANSFER_GURU_VISIBLE, CHIP_GURU_VISIBLE } from '../config/guruVisibility';
 
 const CHIP_LABELS: Record<string, string> = {
   wildcard: 'Wildcard',
@@ -137,14 +138,16 @@ export function MyPicks() {
             }
           >
             <div className="flex flex-col gap-4 pl-1">
-              <div>
-                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
-                  <TransferGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
-                  Transfer Guru
-                </p>
-                <PlayerLine label="In" player={pick.transferIn} />
-                <PlayerLine label="Out" player={pick.transferOut} />
-              </div>
+              {TRANSFER_GURU_VISIBLE && (
+                <div>
+                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+                    <TransferGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
+                    Transfer Guru
+                  </p>
+                  <PlayerLine label="In" player={pick.transferIn} />
+                  <PlayerLine label="Out" player={pick.transferOut} />
+                </div>
+              )}
 
               <div>
                 <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
@@ -167,13 +170,15 @@ export function MyPicks() {
                 <PlayerLine label="Captain" player={pick.captain} />
               </div>
 
-              <div>
-                <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
-                  <ChipGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
-                  Chip Guru
-                </p>
-                <ValueLine label="Chip" value={pick.chipPick ? (CHIP_LABELS[pick.chipPick] ?? pick.chipPick) : null} />
-              </div>
+              {CHIP_GURU_VISIBLE && (
+                <div>
+                  <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+                    <ChipGuruIcon size={14} style={{ color: 'var(--pw-accent)' }} />
+                    Chip Guru
+                  </p>
+                  <ValueLine label="Chip" value={pick.chipPick ? (CHIP_LABELS[pick.chipPick] ?? pick.chipPick) : null} />
+                </div>
+              )}
 
               <div>
                 <p className="mb-1.5 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
