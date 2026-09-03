@@ -90,6 +90,17 @@ export function AccountAvatarMenu() {
             role="menuitem"
             onClick={() => {
               setOpen(false);
+              navigate('/my-fpl');
+            }}
+            className="pw-focus block w-full px-3.5 py-2.5 text-left text-sm"
+          >
+            My FPL Data
+          </button>
+          <button
+            type="button"
+            role="menuitem"
+            onClick={() => {
+              setOpen(false);
               navigate('/account');
             }}
             className="pw-focus block w-full px-3.5 py-2.5 text-left text-sm"
@@ -127,6 +138,9 @@ export function AccountMobileLinks({ onNavigate }: { onNavigate: () => void }) {
       </div>
       <NavLink to="/my-picks" onClick={onNavigate} className="pw-focus block py-2.5 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         My Picks
+      </NavLink>
+      <NavLink to="/my-fpl" onClick={onNavigate} className="pw-focus block py-2.5 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
+        My FPL Data
       </NavLink>
       <NavLink to="/account" onClick={onNavigate} className="pw-focus block py-2.5 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
         Account

@@ -23,11 +23,14 @@ import { readDraft, saveDraft, clearDraft, type PickDraft } from '../lib/pickDra
 import type { PlayerRow } from '../../hooks/usePlayers';
 import { trackEvent } from '../../lib/analytics';
 
-// Transfer Guru is hidden from the UI for now, but nothing underneath it was
-// removed — the state, hydration, submit payload, and backend fields are all
-// still live. Flip this back to true to bring the block back with no other
-// changes needed.
+// Transfer Guru and Chip Guru are hidden from the UI for now, but nothing
+// underneath either was removed — state, hydration, submit payload, and
+// backend fields are all still live. Flip these back to true to bring a
+// block back with no other changes needed. (Chip Guru was already optional
+// and excluded from the required-picks count, so hiding it needs no changes
+// there either.)
 const TRANSFER_GURU_VISIBLE = false;
+const CHIP_GURU_VISIBLE = false;
 
 export function Challenges() {
   usePageTitle('Weekly Challenges - FantasyBrahma');
@@ -319,15 +322,17 @@ export function Challenges() {
           />
         </ChallengeBlock>
 
-        <ChallengeBlock
-          icon={ChipGuruIcon}
-          title="Chip Guru"
-          description="Right chip, right week. Optional - tap again to clear."
-          disabled={deadlinePassed}
-          disabledNote="Picks are locked - the deadline has passed."
-        >
-          <ChipPicker value={chipPick} onChange={setChipPick} disabled={deadlinePassed} />
-        </ChallengeBlock>
+        {CHIP_GURU_VISIBLE && (
+          <ChallengeBlock
+            icon={ChipGuruIcon}
+            title="Chip Guru"
+            description="Right chip, right week. Optional - tap again to clear."
+            disabled={deadlinePassed}
+            disabledNote="Picks are locked - the deadline has passed."
+          >
+            <ChipPicker value={chipPick} onChange={setChipPick} disabled={deadlinePassed} />
+          </ChallengeBlock>
+        )}
 
         <ChallengeBlock
           icon={CSGuruIcon}

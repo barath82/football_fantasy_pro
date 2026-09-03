@@ -3,9 +3,6 @@ import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { useCurrentGameweek } from '../../hooks/useGameweeks';
 import { ExpandableRow } from '../components/ExpandableRow';
-import { FplSnapshotCard } from '../components/FplSnapshotCard';
-import { FplLeagueCard } from '../components/FplLeagueCard';
-import { LinkFplBanner } from '../components/LinkFplBanner';
 import {
   CSGuruIcon,
   ChipGuruIcon,
@@ -71,7 +68,7 @@ function ValueLine({ label, value }: { label: string; value: string | null }) {
 
 export function MyPicks() {
   usePageTitle('My Picks - FantasyBrahma');
-  const { isLoading: authLoading, isAuthenticated, user } = useRequireAuth('/my-picks');
+  const { isLoading: authLoading, isAuthenticated } = useRequireAuth('/my-picks');
 
   const { data: picks, isLoading } = useQuery<MyPick[]>({
     queryKey: ['picks', 'mine'],
@@ -97,26 +94,7 @@ export function MyPicks() {
         Every gameweek you've made a call. Tap one to see the full picks.
       </p>
 
-      <div className="mt-6">
-        <p className="text-xs font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
-          Your fantasy stats
-        </p>
-        <p className="mt-0.5 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-          From your linked FPL team — separate from the picks you make in Challenges below.
-        </p>
-        <div className="mt-3">
-          {user?.fplTeamId ? (
-            <>
-              <FplSnapshotCard enabled />
-              <FplLeagueCard enabled />
-            </>
-          ) : (
-            <LinkFplBanner />
-          )}
-        </div>
-      </div>
-
-      <div className="mt-8 flex flex-col gap-4">
+      <div className="mt-6 flex flex-col gap-4">
         {isLoading && (
           <p className="py-4 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
             Loading…

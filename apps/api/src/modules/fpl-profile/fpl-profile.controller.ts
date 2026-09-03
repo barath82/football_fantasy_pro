@@ -22,4 +22,9 @@ export class FplProfileController {
   getLeagueStandings(@Req() req: AuthedRequest, @Param('leagueId', ParseIntPipe) leagueId: number) {
     return this.fplProfile.getLeagueStandings(req.user.fplTeamId, leagueId);
   }
+
+  @Get('transfers')
+  getTransfers(@Req() req: AuthedRequest) {
+    return this.fplProfile.getTransfers(req.user.fplTeamId);
+  }
 }

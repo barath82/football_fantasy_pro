@@ -62,7 +62,11 @@ export function PlayerPicker({
     pageSize: 8,
   });
 
-  const results = searchActive ? (data?.data ?? []) : [];
+  // Browsable without typing a name — picking a position/team filter alone
+  // is enough to show results, for anyone who doesn't remember the name or
+  // just wants to see who's under a filter and tap to pick.
+  const canBrowse = searchActive || hasActiveFilters;
+  const results = canBrowse ? (data?.data ?? []) : [];
 
   return (
     <div className="relative" style={disabled ? { pointerEvents: 'none' } : undefined}>
@@ -128,7 +132,7 @@ export function PlayerPicker({
         </div>
       )}
 
-      {open && (showFilters || searchActive) && (
+      {open && (showFilters || canBrowse) && (
         <div
           className="absolute z-30 mt-1 max-h-72 w-full overflow-auto rounded-lg"
           style={{ background: 'var(--pw-surface-2)', border: '1px solid var(--pw-border)' }}
@@ -198,7 +202,7 @@ export function PlayerPicker({
             </div>
           )}
 
-          {searchActive && (
+          {canBrowse && (
             <ul>
               {isFetching && (
                 <li className="px-3 py-2 text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
@@ -234,9 +238,9 @@ export function PlayerPicker({
             </ul>
           )}
 
-          {showFilters && !searchActive && (
+          {showFilters && !canBrowse && (
             <p className="px-3 py-2 text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
-              Now type a name to search within this filter.
+              Pick a position or team, or type a name to search.
             </p>
           )}
         </div>

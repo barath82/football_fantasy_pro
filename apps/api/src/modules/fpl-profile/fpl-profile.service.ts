@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Player } from '../../database/entities/player.entity';
 import { FplApiService } from '../sync/fpl-api.service';
 
@@ -43,6 +43,13 @@ export interface FplLeagueStandingsRowDto {
   totalPoints: number;
   eventPoints: number;
   isMe: boolean;
+}
+
+export interface FplTransferDto {
+  event: number;
+  time: string;
+  playerIn: { webName: string; team: string | null } | null;
+  playerOut: { webName: string; team: string | null } | null;
 }
 
 /**
@@ -154,5 +161,35 @@ export class FplProfileService {
         isMe: r.entry === managerId,
       })),
     };
+  }
+
+  async getTransfers(fplTeamId: string | null): Promise<{ managerId: number; transfers: FplTransferDto[] }> {
+    const managerId = this.parseManagerId(fplTeamId);
+    const raw = await this.fplApi.getEntryTransfers(managerId);
+
+    // One batched lookup for every player involved, rather than a query per
+    // transfer — a season's worth of transfers is a small, bounded list, but
+    // no reason to make it N+1.
+    const elementIds = Array.from(new Set(raw.flatMap((t) => [t.element_in, t.element_out])));
+    const players = elementIds.length
+      ? await this.playerRepo.find({ where: { fplId: In(elementIds) }, relations: ['team'] })
+      : [];
+    const byFplId = new Map(players.map((p) => [p.fplId, p]));
+    const toPlayerRef = (fplId: number) => {
+      const p = byFplId.get(fplId);
+      return p ? { webName: p.webName, team: p.team?.shortName ?? null } : null;
+    };
+
+    const transfers = raw
+      .map((t) => ({
+        event: t.event,
+        time: t.time,
+        playerIn: toPlayerRef(t.element_in),
+        playerOut: toPlayerRef(t.element_out),
+      }))
+      // Don't trust FPL's own response order — sort explicitly, newest first.
+      .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+
+    return { managerId, transfers };
   }
 }

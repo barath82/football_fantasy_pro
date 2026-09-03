@@ -26,6 +26,7 @@ import { Login } from './predictor/pages/Login';
 import { ForgotPassword } from './predictor/pages/ForgotPassword';
 import { ResetPassword } from './predictor/pages/ResetPassword';
 import { MyPicks } from './predictor/pages/MyPicks';
+import { MyFplData } from './predictor/pages/MyFplData';
 import { Account } from './predictor/pages/Account';
 
 function StatsLayout() {
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/my-picks" element={<MyPicks />} />
+        <Route path="/my-fpl" element={<MyFplData />} />
         <Route path="/account" element={<Account />} />
       </Route>
 

@@ -30,6 +30,13 @@ export interface FplLeagueStandingsRow {
   isMe: boolean;
 }
 
+export interface FplTransfer {
+  event: number;
+  time: string;
+  playerIn: { webName: string; team: string | null } | null;
+  playerOut: { webName: string; team: string | null } | null;
+}
+
 /**
  * Reads our own backend only, which itself live-fetches FPL's public API on
  * every call — no snapshot stored anywhere. Same react-query staleTime
@@ -69,6 +76,19 @@ export function useFplLeagueStandings(leagueId: number | null) {
       return data;
     },
     enabled: leagueId != null,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
+
+export function useFplTransfers(enabled: boolean) {
+  return useQuery<{ managerId: number; transfers: FplTransfer[] }>({
+    queryKey: ['fpl-profile', 'transfers'],
+    queryFn: async () => {
+      const { data } = await api.get('/me/fpl/transfers');
+      return data;
+    },
+    enabled,
     staleTime: 5 * 60 * 1000,
     retry: 1,
   });

@@ -25,6 +25,16 @@ import { ApiSyncLog } from '../../database/entities/api-sync-log.entity';
 // Lookup maps: fpl_id → internal db id
 type IdMap = Map<number, number>;
 
+// FPL sends these decimal stats as strings (e.g. "0.0"). `parseFloat(x) ||
+// null` looks safe but isn't — a genuine 0 is falsy in JS, so every
+// zero-valued stat (0.0% ownership, 0 form, etc.) silently becomes NULL
+// instead of 0, which then drops those rows out of any `<= :max` SQL filter.
+// Only NaN (a real parse failure) should become null.
+function parseDecimal(raw: string | undefined | null): number | null {
+  const n = parseFloat(raw ?? '');
+  return Number.isNaN(n) ? null : n;
+}
+
 @Injectable()
 export class SyncService {
   private readonly logger = new Logger(SyncService.name);
@@ -247,12 +257,12 @@ export class SyncService {
         nowCost: e.now_cost,
         costChangeStart: e.cost_change_start,
         costChangeEvent: e.cost_change_event,
-        selectedByPercent: parseFloat(e.selected_by_percent) || null,
+        selectedByPercent: parseDecimal(e.selected_by_percent),
         totalPoints: e.total_points,
-        pointsPerGame: parseFloat(e.points_per_game) || null,
-        form: parseFloat(e.form) || null,
-        valueForm: parseFloat(e.value_form) || null,
-        valueSeason: parseFloat(e.value_season) || null,
+        pointsPerGame: parseDecimal(e.points_per_game),
+        form: parseDecimal(e.form),
+        valueForm: parseDecimal(e.value_form),
+        valueSeason: parseDecimal(e.value_season),
         minutes: e.minutes,
         goalsScored: e.goals_scored,
         assists: e.assists,
@@ -266,10 +276,10 @@ export class SyncService {
         saves: e.saves,
         bonus: e.bonus,
         bps: e.bps,
-        influence: parseFloat(e.influence) || null,
-        creativity: parseFloat(e.creativity) || null,
-        threat: parseFloat(e.threat) || null,
-        ictIndex: parseFloat(e.ict_index) || null,
+        influence: parseDecimal(e.influence),
+        creativity: parseDecimal(e.creativity),
+        threat: parseDecimal(e.threat),
+        ictIndex: parseDecimal(e.ict_index),
         transfersIn: e.transfers_in,
         transfersOut: e.transfers_out,
         transfersInEvent: e.transfers_in_event,
@@ -429,10 +439,10 @@ export class SyncService {
         saves: h.saves,
         bonus: h.bonus,
         bps: h.bps,
-        influence: parseFloat(h.influence) || null,
-        creativity: parseFloat(h.creativity) || null,
-        threat: parseFloat(h.threat) || null,
-        ictIndex: parseFloat(h.ict_index) || null,
+        influence: parseDecimal(h.influence),
+        creativity: parseDecimal(h.creativity),
+        threat: parseDecimal(h.threat),
+        ictIndex: parseDecimal(h.ict_index),
         totalPoints: h.total_points,
         value: h.value,
         transfersBalance: h.transfers_balance,

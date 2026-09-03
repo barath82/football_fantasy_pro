@@ -44,6 +44,15 @@ export interface FplPicksResponse {
   picks: Array<{ element: number; is_captain: boolean; is_vice_captain: boolean; multiplier: number }>;
 }
 
+export interface FplTransfer {
+  element_in: number;
+  element_in_cost: number;
+  element_out: number;
+  element_out_cost: number;
+  event: number;
+  time: string;
+}
+
 export interface FplClassicStandingsResponse {
   league: { id: number; name: string };
   standings: {
@@ -102,6 +111,10 @@ export class FplApiService {
 
   async getClassicLeagueStandings(leagueId: number): Promise<FplClassicStandingsResponse> {
     return this.get<FplClassicStandingsResponse>(`/leagues-classic/${leagueId}/standings/`);
+  }
+
+  async getEntryTransfers(managerId: number): Promise<FplTransfer[]> {
+    return this.get<FplTransfer[]>(`/entry/${managerId}/transfers/`);
   }
 
   private async get<T>(path: string, retries = 3): Promise<T> {
