@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Player } from '../../database/entities/player.entity';
 import { FplApiService } from '../sync/fpl-api.service';
+import { parseManagerId } from './parse-manager-id.util';
 
 // Best-effort mapping of FPL's raw chip codes to display labels. The exact
 // strings are a documented convention of this unofficial API, not confirmed
@@ -68,19 +69,8 @@ export class FplProfileService {
     @InjectRepository(Player) private readonly playerRepo: Repository<Player>,
   ) {}
 
-  private parseManagerId(fplTeamId: string | null): number {
-    if (!fplTeamId) {
-      throw new BadRequestException('Link your FPL team ID first.');
-    }
-    const id = parseInt(fplTeamId, 10);
-    if (!Number.isFinite(id) || id <= 0) {
-      throw new BadRequestException('Invalid FPL team ID.');
-    }
-    return id;
-  }
-
   async getSnapshot(fplTeamId: string | null): Promise<FplSnapshotDto> {
-    const managerId = this.parseManagerId(fplTeamId);
+    const managerId = parseManagerId(fplTeamId);
     const [entry, history] = await Promise.all([
       this.fplApi.getEntry(managerId),
       this.fplApi.getEntryHistory(managerId),
@@ -126,7 +116,7 @@ export class FplProfileService {
   }
 
   async getLeagues(fplTeamId: string | null): Promise<{ managerId: number; leagues: FplLeagueSummaryDto[] }> {
-    const managerId = this.parseManagerId(fplTeamId);
+    const managerId = parseManagerId(fplTeamId);
     const entry = await this.fplApi.getEntry(managerId);
     const leagues = (entry.leagues?.classic ?? [])
       .map((l) => ({
@@ -145,7 +135,7 @@ export class FplProfileService {
     fplTeamId: string | null,
     leagueId: number,
   ): Promise<{ leagueId: number; leagueName: string | null; standings: FplLeagueStandingsRowDto[] }> {
-    const managerId = this.parseManagerId(fplTeamId);
+    const managerId = parseManagerId(fplTeamId);
     const data = await this.fplApi.getClassicLeagueStandings(leagueId);
     const results = data.standings?.results ?? [];
     return {
@@ -164,7 +154,7 @@ export class FplProfileService {
   }
 
   async getTransfers(fplTeamId: string | null): Promise<{ managerId: number; transfers: FplTransferDto[] }> {
-    const managerId = this.parseManagerId(fplTeamId);
+    const managerId = parseManagerId(fplTeamId);
     const raw = await this.fplApi.getEntryTransfers(managerId);
 
     // One batched lookup for every player involved, rather than a query per

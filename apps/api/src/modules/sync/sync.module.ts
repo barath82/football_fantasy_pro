@@ -13,6 +13,7 @@ import { ApiSyncLog } from '../../database/entities/api-sync-log.entity';
 import { FplApiService } from './fpl-api.service';
 import { SyncService } from './sync.service';
 import { SyncController } from './sync.controller';
+import { OwnershipSnapshotCronService } from './ownership-snapshot-cron.service';
 
 @Module({
   imports: [
@@ -22,7 +23,7 @@ import { SyncController } from './sync.controller';
       PriceHistory, ApiSyncLog,
     ]),
   ],
-  providers: [FplApiService, SyncService],
+  providers: [FplApiService, SyncService, OwnershipSnapshotCronService],
   controllers: [SyncController],
   exports: [SyncService, FplApiService],
 })

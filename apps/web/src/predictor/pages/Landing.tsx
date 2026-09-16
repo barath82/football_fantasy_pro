@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { GameweekBadge } from '../components/GameweekBadge';
+import { LastGameweekCard } from '../components/LastGameweekCard';
 import {
   BrahmaIcon,
   CSGuruIcon,
@@ -28,6 +29,8 @@ export function Landing() {
       <div className="mt-6">
         <GameweekBadge suffix="open now" />
       </div>
+
+      <LastGameweekCard />
 
       <h1 className="mt-[12.32px] text-4xl leading-[1.05] sm:text-6xl">
         <span className="text-[18.9px] xl:whitespace-nowrap xl:text-[21px]">Same content. Same picks. Same boring mini-league.</span>

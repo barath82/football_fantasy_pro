@@ -34,14 +34,64 @@ export interface FplEntry {
   };
 }
 
+// Verified directly against a real manager's response (2026-09-16) — see
+// entry_history below for the identical per-event shape confirmed live.
+export interface FplEntryHistoryRow {
+  event: number;
+  points: number;
+  total_points: number;
+  rank: number;
+  overall_rank: number;
+  percentile_rank: number;
+  overall_rank_percentage: string; // e.g. "68" — FPL's own "top X%", already computed, not ours to derive
+  event_transfers: number;
+  event_transfers_cost: number;
+  points_on_bench: number;
+}
+
 export interface FplEntryHistory {
-  current: Array<{ event: number; points: number; rank: number | null }>;
+  current: FplEntryHistoryRow[];
   chips: Array<{ name: string; event: number; time: string }>;
 }
 
+export interface FplPick {
+  element: number;
+  element_type: number; // position id — 1 GKP, 2 DEF, 3 MID, 4 FWD
+  position: number; // 1-11 originally-selected starting XI, 12-15 bench
+  multiplier: number;
+  is_captain: boolean;
+  is_vice_captain: boolean;
+}
+
+export interface FplAutomaticSub {
+  element_in: number;
+  element_out: number;
+  event: number;
+}
+
+// Verified live: FPL reports the auto-sub outcome directly — no need to
+// simulate their substitution rules (bench order, GK-for-GK, formation
+// validity) ourselves.
 export interface FplPicksResponse {
   active_chip: string | null;
-  picks: Array<{ element: number; is_captain: boolean; is_vice_captain: boolean; multiplier: number }>;
+  automatic_subs: FplAutomaticSub[];
+  entry_history: FplEntryHistoryRow;
+  picks: FplPick[];
+}
+
+// One call returns every player's stats for a single gameweek — used for
+// captaincy/lineup efficiency instead of N per-player element-summary calls.
+export interface FplEventLiveElement {
+  id: number;
+  stats: {
+    minutes: number;
+    total_points: number;
+    bonus: number;
+  };
+}
+
+export interface FplEventLive {
+  elements: FplEventLiveElement[];
 }
 
 export interface FplTransfer {
@@ -115,6 +165,10 @@ export class FplApiService {
 
   async getEntryTransfers(managerId: number): Promise<FplTransfer[]> {
     return this.get<FplTransfer[]>(`/entry/${managerId}/transfers/`);
+  }
+
+  async getEventLive(event: number): Promise<FplEventLive> {
+    return this.get<FplEventLive>(`/event/${event}/live/`);
   }
 
   private async get<T>(path: string, retries = 3): Promise<T> {

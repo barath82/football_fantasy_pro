@@ -37,6 +37,87 @@ export interface FplTransfer {
   playerOut: { webName: string; team: string | null } | null;
 }
 
+export interface RankImpact {
+  points: number;
+  average: number | null;
+  vsAverage: number | null;
+  overallRank: number;
+  previousOverallRank: number | null;
+  rankMovement: number | null;
+  topPercent: number | null;
+}
+
+export interface TransferPair {
+  playerIn: { webName: string; team: string | null; points: number } | null;
+  playerOut: { webName: string; team: string | null; points: number } | null;
+  gain: number;
+  threeGw: { playerInPoints: number; playerOutPoints: number; impact: number; gameweeksCounted: number } | null;
+}
+
+export interface TransferImpact {
+  chip: 'wildcard' | 'freehit' | null;
+  hitCost: number;
+  pairs: TransferPair[];
+  combinedNetImpact: number | null;
+}
+
+export interface PlayerRef {
+  webName: string;
+  team: string | null;
+  points: number;
+}
+
+export interface Captaincy {
+  captain: (PlayerRef & { multiplier: number }) | null;
+  bestAvailable: PlayerRef | null;
+  efficiency: number | null;
+  missedPoints: number | null;
+  isTripleCaptain: boolean;
+  captainDidNotPlay: boolean;
+}
+
+export interface LineupEfficiency {
+  chip: 'bboost' | null;
+  actualPoints: number | null;
+  bestPossiblePoints: number | null;
+  efficiency: number | null;
+  missedPoints: number | null;
+  biggestMiss: { benched: PlayerRef; startedInstead: PlayerRef } | null;
+}
+
+export interface DifferentialPlayer extends PlayerRef {
+  ownershipPercent: number;
+}
+
+export interface DifferentialImpact {
+  ownershipDataAvailable: boolean;
+  biggestBoost: DifferentialPlayer | null;
+  biggestTemplateDamage: DifferentialPlayer | null;
+}
+
+export interface BestDecision {
+  type: 'transfer' | 'captaincy' | 'differential';
+  headline: string;
+  detail: string;
+}
+
+export interface BiggestMiss {
+  type: 'lineup' | 'captaincy' | 'transfer';
+  headline: string;
+  detail: string;
+}
+
+export interface GameweekReview {
+  gameweek: number;
+  rankImpact: RankImpact;
+  transferImpact: TransferImpact;
+  captaincy: Captaincy;
+  lineupEfficiency: LineupEfficiency;
+  differentialImpact: DifferentialImpact;
+  bestDecision: BestDecision | null;
+  biggestMiss: BiggestMiss | null;
+}
+
 /**
  * Reads our own backend only, which itself live-fetches FPL's public API on
  * every call — no snapshot stored anywhere. Same react-query staleTime
@@ -86,6 +167,40 @@ export function useFplTransfers(enabled: boolean) {
     queryKey: ['fpl-profile', 'transfers'],
     queryFn: async () => {
       const { data } = await api.get('/me/fpl/transfers');
+      return data;
+    },
+    enabled,
+    staleTime: 5 * 60 * 1000,
+    retry: 1,
+  });
+}
+
+export interface SeasonContext {
+  gameweeksCounted: number;
+  seasonTransferImpact: number | null;
+  seasonCaptaincyEfficiency: number | null;
+  averageLineupEfficiency: number | null;
+}
+
+export function useSeasonContext(enabled: boolean) {
+  return useQuery<SeasonContext>({
+    queryKey: ['fpl-profile', 'season'],
+    queryFn: async () => {
+      const { data } = await api.get('/me/fpl/season');
+      return data;
+    },
+    enabled,
+    staleTime: 30 * 60 * 1000,
+    retry: 1,
+  });
+}
+
+/** Personal Gameweek Review — omit `gameweek` for the latest completed one. */
+export function useGameweekReview(enabled: boolean, gameweek?: number) {
+  return useQuery<GameweekReview>({
+    queryKey: ['fpl-profile', 'review', gameweek ?? 'latest'],
+    queryFn: async () => {
+      const { data } = await api.get('/me/fpl/review', { params: gameweek ? { gameweek } : undefined });
       return data;
     },
     enabled,
