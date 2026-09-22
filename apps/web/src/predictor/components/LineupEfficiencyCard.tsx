@@ -45,14 +45,14 @@ export function LineupEfficiencyCard({ lineup }: { lineup: LineupEfficiency }) {
           )}
 
           {lineup.efficiency != null && (
-            <p className="mt-0.5 text-[0.65rem]" style={{ color: 'var(--pw-fg-muted)' }}>
+            <p className="mt-0.5 text-[0.63rem]" style={{ color: 'var(--pw-fg-muted)' }}>
               {lineup.actualPoints} / {lineup.bestPossiblePoints} = {lineup.efficiency}%
             </p>
           )}
 
           {lineup.biggestMiss && (
             <div className="mt-3 rounded-md p-2.5" style={{ background: 'var(--pw-surface-2)' }}>
-              <p className="text-[0.65rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+              <p className="text-[0.63rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
                 Biggest lineup miss
               </p>
               <p className="mt-1 text-xs" style={{ color: 'var(--pw-fg)' }}>

@@ -82,7 +82,7 @@ export function GameweekReviewSection() {
       {review && !isLoading && (
         <>
           <div className="text-center">
-            <p className="pw-display text-3xl" style={{ color: 'var(--pw-fg)' }}>
+            <p className="pw-display text-2xl" style={{ color: 'var(--pw-fg)' }}>
               {review.rankImpact.points} points
             </p>
             {review.rankImpact.average != null && (

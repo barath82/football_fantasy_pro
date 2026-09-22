@@ -27,7 +27,7 @@ export function DifferentialImpactCard({ differential }: { differential: Differe
 
       {differential.ownershipDataAvailable && differential.biggestBoost && (
         <div className="mt-2">
-          <p className="text-[0.65rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+          <p className="text-[0.63rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
             Biggest differential boost
           </p>
           <p className="mt-0.5 text-sm" style={{ color: 'var(--pw-fg)' }}>
@@ -41,7 +41,7 @@ export function DifferentialImpactCard({ differential }: { differential: Differe
 
       {differential.ownershipDataAvailable && differential.biggestTemplateDamage && (
         <div className="mt-3">
-          <p className="text-[0.65rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+          <p className="text-[0.63rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
             Biggest template damage
           </p>
           <p className="mt-0.5 text-sm" style={{ color: 'var(--pw-fg)' }}>

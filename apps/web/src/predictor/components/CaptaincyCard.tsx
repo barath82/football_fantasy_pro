@@ -60,7 +60,7 @@ export function CaptaincyCard({ captaincy }: { captaincy: Captaincy }) {
       )}
 
       {captaincy.efficiency != null && captaincy.bestAvailable && (
-        <p className="mt-0.5 text-[0.65rem]" style={{ color: 'var(--pw-fg-muted)' }}>
+        <p className="mt-0.5 text-[0.63rem]" style={{ color: 'var(--pw-fg-muted)' }}>
           {captaincy.captain.points} / {captaincy.bestAvailable.points} = {captaincy.efficiency}%
         </p>
       )}

@@ -58,7 +58,7 @@ export function QuickManagementSummary({
             border: `1px solid ${expanded === key ? 'var(--pw-accent)' : 'var(--pw-border)'}`,
           }}
         >
-          <p className="text-[0.65rem] font-medium uppercase tracking-wide" style={{ color: expanded === key ? 'var(--pw-accent-fg)' : 'var(--pw-fg-muted)' }}>
+          <p className="text-[0.63rem] font-medium uppercase tracking-wide" style={{ color: expanded === key ? 'var(--pw-accent-fg)' : 'var(--pw-fg-muted)' }}>
             {LABELS[key]}
           </p>
           <p className="pw-display mt-0.5 text-lg" style={{ color: expanded === key ? 'var(--pw-accent-fg)' : 'var(--pw-fg)' }}>

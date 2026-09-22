@@ -31,7 +31,7 @@ function PairRow({ pair }: { pair: TransferPair }) {
 
       {pair.threeGw && pair.threeGw.gameweeksCounted > 1 && (
         <div className="mt-2 rounded-md p-2" style={{ background: 'var(--pw-surface-2)' }}>
-          <p className="text-[0.65rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
+          <p className="text-[0.63rem] font-medium uppercase tracking-wide" style={{ color: 'var(--pw-fg-muted)' }}>
             {pair.threeGw.gameweeksCounted}-GW impact
           </p>
           <div className="mt-1 flex justify-between text-xs">

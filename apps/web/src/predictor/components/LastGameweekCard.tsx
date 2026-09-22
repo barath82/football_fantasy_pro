@@ -54,12 +54,12 @@ export function LastGameweekCard() {
         Your last gameweek
       </p>
 
-      <div className="mt-2 flex items-baseline gap-3">
-        <span className="pw-display text-2xl" style={{ color: 'var(--pw-fg)' }}>
-          GW{review.gameweek}
-        </span>
+      <div className="mt-2 flex items-baseline gap-2">
         <span className="pw-display text-lg" style={{ color: 'var(--pw-fg)' }}>
           {review.rankImpact.points} pts
+        </span>
+        <span className="text-xs" style={{ color: 'var(--pw-fg-muted)' }}>
+          GW{review.gameweek}
         </span>
         {rankMove && (
           <span className="text-sm" style={{ color: 'var(--pw-fg-muted)' }}>
