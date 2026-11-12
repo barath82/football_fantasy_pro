@@ -14,6 +14,7 @@ import { FplApiService } from './fpl-api.service';
 import { SyncService } from './sync.service';
 import { SyncController } from './sync.controller';
 import { OwnershipSnapshotCronService } from './ownership-snapshot-cron.service';
+import { BootstrapSyncCronService } from './bootstrap-sync-cron.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { OwnershipSnapshotCronService } from './ownership-snapshot-cron.service'
       PriceHistory, ApiSyncLog,
     ]),
   ],
-  providers: [FplApiService, SyncService, OwnershipSnapshotCronService],
+  providers: [FplApiService, SyncService, OwnershipSnapshotCronService, BootstrapSyncCronService],
   controllers: [SyncController],
   exports: [SyncService, FplApiService],
 })
